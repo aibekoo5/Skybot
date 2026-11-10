@@ -8,9 +8,12 @@ public class Movement : MonoBehaviour
 {
     // қозғалыс енді күшпен емес, жылдамдықпен беріледі
     public float speed = 6f;            // жүгіру жылдамдығы
-    public float turnSpeed = 12f;       // бұрылу жылдамдығы
-    public float jumpImpulse = 6f;      // секіру
+    public float turnSpeed = 6f;        // бұрылу жылдамдығы (аз болса — баяу бұрылады)
+    public float jumpImpulse = 5f;      // секіру (~1.27 м биіктік)
     public float airControl = 0.3f;     // ауадағы басқару (0..1)
+    public float acceleration = 30f;    // жерде жылдамдық қаншалықты тез өзгереді (м/с²): аз болса — «ауыр» кейіпкер
+    public float shootMoveMultiplier = 0.2f; // атып жатқанда жылдамдық (0.2 = қалыптының 20%-ы)
+    public float jumpCooldown = 0.25f;  // екі секірудің арасы (жерден шыққанша қайта секірмесін)
     public float timeLimit = 60f;       // таймер
 
     // жерде тұрғанын тексеру
@@ -37,11 +40,21 @@ public class Movement : MonoBehaviour
     private int totalCoins;
     private bool grounded = false;      // onGround орнына
     private float timeLeft;
+    private float nextJumpTime;
     private bool gameOver = false;
 
     private Vector2 move;
     private bool fireRequested;
     private Shooter shooter;
+
+    // ату: кейіпкер экран қараған жаққа бұрылады
+    public float aimHoldTime = 0.6f;    // атқаннан кейін қанша секунд экран жаққа қарап тұрады
+    private CameraFollow camFollow;
+    private float aimUntil;
+    private bool shootPending;
+    private int aimLayer = -1;          // SwatAnimator-дағы AimLocomotion қабаты (атып жүру анимациясы)
+    private float aimWeight;
+    public float AimWeight => aimWeight;   // 0..1, атып жатқанда 1 (GunHold көздеу түзетуі үшін)          // бұрылған соң келесі кадрда атамыз (мылтық та бұрылып үлгереді)
 
     void Awake()
     {
@@ -52,6 +65,8 @@ public class Movement : MonoBehaviour
     void Start()
     {
         cam = Camera.main.transform;    
+        camFollow = cam.GetComponent<CameraFollow>();
+        aimLayer = anim.GetLayerIndex("AimLocomotion");
 
         totalCoins = GameObject.FindGameObjectsWithTag("Coin").Length;
         Debug.Log("Coins in this level: " + totalCoins);
@@ -72,9 +87,11 @@ public class Movement : MonoBehaviour
     {
         if (gameOver) return;
 
-        // жерде тұрса және төмен құлап бара жатпаса ғана
-        if (grounded && rb.linearVelocity.y <= 0.1f)
+        // жерде тұрса секіреді; бұрын velocity.y <= 0.1 тексерілетін —
+        // рампада жоғары жүгіргенде y > 0 болып, секіру бөгелетін. Енді оның орнына кідіріс.
+        if (grounded && Time.time >= nextJumpTime)
         {
+            nextJumpTime = Time.time + jumpCooldown;
             Vector3 v = rb.linearVelocity;
             v.y = 0f;                                   // әр секіру бірдей биіктікте
             rb.linearVelocity = v;
@@ -102,6 +119,14 @@ public class Movement : MonoBehaviour
         flat.y = 0f;
         anim.SetFloat("Speed", flat.magnitude);
         anim.SetBool("Grounded", grounded);
+        UpdateAimAnimation(flat);
+
+        // алдыңғы кадрда бұрылдық — енді мылтықтың ұшынан экран бағытына атамыз
+        if (shootPending)
+        {
+            shootPending = false;
+            if (shooter != null) shooter.Shoot(AimDirection());
+        }
 
         // ату
         if (fireRequested)
@@ -111,12 +136,21 @@ public class Movement : MonoBehaviour
             bool fromFireButton = Gamepad.current != null
                                   && Gamepad.current.buttonWest.isPressed;
 
-            bool pointerOnUI = EventSystem.current != null
+            // курсор бекітулі (компьютерде ойнап жатыр) — UI-ді баса алмайды, сол жақ батырма = ату
+            bool cursorLocked = Cursor.lockState == CursorLockMode.Locked;
+            bool pointerOnUI = !cursorLocked
+                               && EventSystem.current != null
                                && EventSystem.current.IsPointerOverGameObject();
 
-            // кейіпкер қараған жаққа атады
+            // экран қараған жаққа атады: алдымен кейіпкер бірден сол жаққа бұрылады
             if (shooter != null && (fromFireButton || !pointerOnUI))
-                shooter.Shoot(transform.forward);
+            {
+                Quaternion face = Quaternion.LookRotation(FlatAim());
+                rb.rotation = face;
+                transform.rotation = face;
+                aimUntil = Time.time + aimHoldTime;
+                shootPending = true;
+            }
         }
 
         // таймер (timeLimit = 0 болса — таймер жоқ, мысалы бастық деңгейінде)
@@ -148,16 +182,27 @@ public class Movement : MonoBehaviour
         // джойстик → әлемдегі бағыт
         Vector3 dir = camF * move.y + camR * move.x;
 
-        // көлденең жылдамдық: жерде бірден, ауада баяу өзгереді
-        Vector3 target = dir * speed;
+        // атып жатқанда баяу жүреді, ату тоқтаған соң қалпына келеді
+        bool shooting = Time.time < aimUntil;
+        Vector3 target = dir * speed * (shooting ? shootMoveMultiplier : 1f);
+
+        // жерде: жылдамдық үдеумен өзгереді — WASD-ты жылдам кезек басса да бір орында дірілдемейді
+        // ауада: бұрынғыдай — әр қадам сайын airControl үлесіне жақындайды (тез бұрылады)
         Vector3 current = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
-        Vector3 horizontal = Vector3.Lerp(current, target, grounded ? 1f : airControl);
+        Vector3 horizontal = grounded
+            ? Vector3.MoveTowards(current, target, acceleration * Time.fixedDeltaTime)
+            : Vector3.Lerp(current, target, airControl);
 
         // y (гравитация, секіру) өзгермейді
         rb.linearVelocity = new Vector3(horizontal.x, rb.linearVelocity.y, horizontal.z);
 
-        // кейіпкер жүрген жағына бұрылады
-        if (dir.sqrMagnitude > 0.01f)
+        // атып жатқанда — экран жаққа қарап тұрады (жүгірсе де)
+        if (shooting)
+        {
+            rb.MoveRotation(Quaternion.LookRotation(FlatAim()));
+        }
+        // әйтпесе кейіпкер жүрген жағына бұрылады
+        else if (dir.sqrMagnitude > 0.01f)
         {
             Quaternion look = Quaternion.LookRotation(dir);
             rb.MoveRotation(Quaternion.Slerp(rb.rotation, look, turnSpeed * Time.fixedDeltaTime));
@@ -209,6 +254,46 @@ public class Movement : MonoBehaviour
             if (h != null) h.TakeDamage(1);
             else Restart();
         }
+    }
+
+    // атып жатқанда: жүгіру емес, экран жаққа қарап алға/артқа/жанына жүру анимациясы
+    void UpdateAimAnimation(Vector3 flatVelocity)
+    {
+        if (aimLayer < 0) return;
+
+        bool aiming = Time.time < aimUntil && grounded;
+        aimWeight = Mathf.MoveTowards(aimWeight, aiming ? 1f : 0f, 8f * Time.deltaTime);
+        anim.SetLayerWeight(aimLayer, aimWeight);
+
+        // кейіпкерге қатысты жылдамдық: x — жанына, z — алға; 1 = атқандағы толық жылдамдық
+        Vector3 local = transform.InverseTransformDirection(flatVelocity);
+        float full = Mathf.Max(speed * shootMoveMultiplier, 0.1f);
+        Vector2 m = Vector2.ClampMagnitude(new Vector2(local.x, local.z) / full, 1f);
+        anim.SetFloat("MoveX", m.x, 0.1f, Time.deltaTime);
+        anim.SetFloat("MoveZ", m.y, 0.1f, Time.deltaTime);
+    }
+
+    // экран қараған көлденең бағыт
+    Vector3 FlatAim()
+    {
+        if (camFollow != null) return camFollow.FlatForward;
+        Vector3 f = cam.forward; f.y = 0f;
+        return f.sqrMagnitude > 0.001f ? f.normalized : transform.forward;
+    }
+
+    // оқтың бағыты: мылтықтың ұшынан экран ортасы (crosshair) көрсетіп тұрған нүктеге
+    Vector3 AimDirection()
+    {
+        Vector3 from = (shooter != null && shooter.muzzle != null)
+            ? shooter.muzzle.position
+            : transform.position + Vector3.up * 1.4f;
+        Vector3 to = camFollow != null ? camFollow.GetAimPoint() : from + cam.forward * 100f;
+
+        Vector3 dir = to - from;
+        // нысана мылтықтың артында қалса (қабырғаға тығылып тұрсаң) — жай камера бағытымен
+        if (dir.sqrMagnitude < 0.01f || Vector3.Dot(dir.normalized, FlatAim()) < 0.1f)
+            return cam.forward;
+        return dir.normalized;
     }
 
     void EndGame(string message)

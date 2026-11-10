@@ -9,6 +9,9 @@ EditorBuildSettings:
     path: Assets/Scenes/Main menu.unity
     guid: de88ae79255c51f418fad1c78811c139
   - enabled: 1
+    path: Assets/Scenes/Level2_Outpost.unity
+    guid: 22dcce188e617ac42918aab2e6227984
+  - enabled: 1
     path: Assets/Scenes/Level1.unity
     guid: 99c9720ab356a0642a771bea13969a05
   - enabled: 1

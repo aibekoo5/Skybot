@@ -1,5 +1,5 @@
 AI LOG — Sky Bot (Assignment 8-9)
 
-Claude Code · UI did not fit notch phones and tablets · "How do I make my Menu, HUD and Pause fit every phone (scaler, anchors, safe area)?" · SafeArea.cs from the lecture pattern and an editor tool MobileUIBuilder.cs that sets Canvas Scaler 1920x1080 Match 1, anchors and button sizes · checked every screen in Device Simulator on 16:9, a notch phone and a tablet
-Claude Code · NullReferenceException in PlayerProfile on start · "Why does PlayerProfile throw on the player?" · the renderer is on the child model, use GetComponentInChildren · verified the hero color changes from Settings
-Claude Code · GDD layout · "Help me structure a one-page GDD with the ten required parts" · a template with sections · the game idea, content, cut list and weekly plan are my decisions
+1. Claude Code · UI did not fit notch phones and tablets · "How do I make my Menu, HUD and Pause fit every phone (scaler, anchors, safe area)?" · SafeArea.cs from the lecture pattern and an editor tool MobileUIBuilder.cs that sets Canvas Scaler 1920x1080 Match 1, anchors and button sizes · checked every screen in Device Simulator on 16:9, a notch phone and a tablet
+2. Claude Code · NullReferenceException in PlayerProfile on start · "Why does PlayerProfile throw on the player?" · the renderer is on the child model, use GetComponentInChildren · verified the hero color changes from Settings
+3. Claude Code · GDD layout · "Help me structure a one-page GDD with the ten required parts" · a template with sections · the game idea, content, cut list and weekly plan are my decisions

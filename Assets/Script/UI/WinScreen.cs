@@ -11,6 +11,6 @@ public class WinScreen : MonoBehaviour
 
     public void PlayAgain()
     {
-        SceneManager.LoadScene("Level1");
+        SceneManager.LoadScene("Level2_Outpost");   // бірінші деңгейден қайта
     }
 }

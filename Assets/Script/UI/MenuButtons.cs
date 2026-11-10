@@ -22,7 +22,7 @@ public class MenuButtons : MonoBehaviour
 
     public void Play()
     {
-        SceneManager.LoadScene("Level1");
+        SceneManager.LoadScene("Level2_Outpost");   // бірінші деңгей — Outpost (Assignment 10)
     }
 
     public void Quit()

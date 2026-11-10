@@ -6,6 +6,7 @@ public class Shooter : MonoBehaviour
     public float cooldown = 0.3f;       
     public float muzzleDistance = 1f;    
     public float muzzleHeight = 0.5f;   
+    public Transform muzzle;            // мылтықтың ұшы — бар болса, оқ сол жерден шығады
     public AudioClip shootClip;         
 
 
@@ -27,7 +28,9 @@ public class Shooter : MonoBehaviour
 
         Vector3 aimDir = useMovementDirection ? moveDir : transform.forward;
 
-        Vector3 pos = transform.position + aimDir * muzzleDistance + Vector3.up * muzzleHeight;
+        Vector3 pos = muzzle != null
+            ? muzzle.position                                   // мылтықтың ұшынан
+            : transform.position + aimDir * muzzleDistance + Vector3.up * muzzleHeight;
         Bullet b = Instantiate(bulletPrefab, pos, Quaternion.LookRotation(aimDir));
         b.Launch(aimDir);
 
