@@ -1907,10 +1907,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 63a6b88555934f14c9aa24886e2573d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MachineGunTurret
-  maxHp: 4
   eye: {fileID: 4158012470288915361}
-  viewDistance: 16
-  viewAngle: 140
   sightBlockers:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -1930,18 +1927,8 @@ MonoBehaviour:
   muzzle: {fileID: 2879226838161376131}
   laser: {fileID: 1347476580114045667}
   barrelRenderer: {fileID: 7995833182392606652}
-  scanAngle: 90
-  scanSpeed: 0.6
-  trackTurnSpeed: 160
-  spinUpTime: 0.7
-  burstCount: 8
-  burstInterval: 0.11
-  burstTurnSpeed: 40
-  spread: 2.5
+  stats: {fileID: 11400000, guid: 5e2ed21c3038f28498cc29b235585777, type: 2}
   projectilePrefab: {fileID: 1714748912431713233, guid: b14acd4e6eb46794dbcbf90a2c163172, type: 3}
-  projectileSpeed: 15
-  damage: 1
-  overheatTime: 2
   shotClip: {fileID: 8300000, guid: caef9d7a6c6b97442aab1b1d3ac62b31, type: 3}
 --- !u!1 &8864215458305012106
 GameObject:

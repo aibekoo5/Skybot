@@ -128,7 +128,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 635831ae141cd2b4f87a3a42f6864715, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Heart
-  lifeTime: 15
+  items: {fileID: 11400000, guid: 92e1cdcd28f560e4a91a1013ccbd0429, type: 2}
+  lifeTimeOverride: -1
 --- !u!54 &7775448549840838067
 Rigidbody:
   m_ObjectHideFlags: 0

@@ -126,12 +126,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ff4c74939867724baffd8d6261e1876, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BombHazard
-  lifeTime: 15
-  fuse: 2
+  items: {fileID: 11400000, guid: 92e1cdcd28f560e4a91a1013ccbd0429, type: 2}
+  lifeTimeOverride: -1
   explosionPrefab: {fileID: 0}
   explodeClip: {fileID: 8300000, guid: 95255e781aafd394f851dfe9dba52a50, type: 3}
-  blastRadius: 0
-  blastDamage: 2
 --- !u!54 &901040297294835003
 Rigidbody:
   m_ObjectHideFlags: 0

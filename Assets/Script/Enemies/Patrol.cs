@@ -1,11 +1,12 @@
 using UnityEngine;
 
 // жау екі нүкте арасында ары-бері жүреді (Level 2)
-// Enemy тегі + Collider керек — зақымды Movement береді
+// Enemy тегі + Collider керек — зақымды Movement береді (ItemValues.enemyContactDamage)
+// Жылдамдық — PatrollerStats asset-те; жүру аралығы (offset) — деңгейдің рельефі, сахнада.
 public class Patrol : MonoBehaviour
 {
     public Vector3 offset = new Vector3(4f, 0f, 0f);   // бастапқы орыннан қаншалықты алыс барады
-    public float speed = 2f;
+    [SerializeField] PatrollerStats stats;
 
     Vector3 pointA;
     Vector3 pointB;
@@ -20,7 +21,7 @@ public class Patrol : MonoBehaviour
 
     void Update()
     {
-        transform.position = Vector3.MoveTowards(transform.position, target, speed * Time.deltaTime);
+        transform.position = Vector3.MoveTowards(transform.position, target, stats.speed * Time.deltaTime);
 
         // жүрген жағына қарайды
         Vector3 dir = target - transform.position;

@@ -1,11 +1,9 @@
 using UnityEngine;
 
-// бастықтың оғы — Hazard-тан мұра алады (тисе 1 зақым)
+// бастықтың оғы — Hazard-тан мұра алады (зақым — ItemValues.rockDamage, жылдамдық — BossStats)
 public class BossProjectile : Hazard
 {
-    public float speed = 8f;
-
-    public void Launch(Vector3 direction)
+    public void Launch(Vector3 direction, float speed)
     {
         Rigidbody rb = GetComponent<Rigidbody>();
         rb.useGravity = false;

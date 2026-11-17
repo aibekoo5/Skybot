@@ -194,10 +194,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4747d32b53e32b46b764dd551342ce6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Rifleman
-  maxHp: 3
   eye: {fileID: 5979787093765370700}
-  viewDistance: 14
-  viewAngle: 120
   sightBlockers:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -211,21 +208,11 @@ MonoBehaviour:
   telegraphClip: {fileID: 0}
   stateLabel: {fileID: 4994549754794910677}
   showStateLabel: 1
+  stats: {fileID: 11400000, guid: 5ada76fa03576ed42a9360e0c9ae7565, type: 2}
   waypoints: []
-  patrolSpeed: 1.6
-  waypointWait: 1.5
-  chaseSpeed: 2.8
-  searchTime: 4
-  searchTurnSpeed: 90
   muzzle: {fileID: 2009233945071058282}
   laser: {fileID: 4280980172829266661}
-  fireRange: 11
-  aimTime: 0.6
-  aimTurnSpeed: 200
   projectilePrefab: {fileID: 1714748912431713233, guid: b14acd4e6eb46794dbcbf90a2c163172, type: 3}
-  projectileSpeed: 10
-  damage: 1
-  cooldown: 1.4
   shotClip: {fileID: 8300000, guid: ea87029d855b8144ea6e18b1e8a46c80, type: 3}
 --- !u!1 &5398323865062034290
 GameObject:

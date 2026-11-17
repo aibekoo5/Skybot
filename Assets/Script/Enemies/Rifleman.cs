@@ -12,26 +12,17 @@ public class Rifleman : EnemyBase
 {
     public enum State { Patrol, Chase, Search, Aim, Fire, Cooldown }
 
-    [Header("Patrol")]
-    [SerializeField] Transform[] waypoints;
-    [SerializeField] float patrolSpeed = 1.6f;
-    [SerializeField] float waypointWait = 1.5f;
+    [Header("Баланс (Assets/Data/Enemies/RiflemanStats.asset)")]
+    [SerializeField] RiflemanStats stats;
+    protected override EnemyStats BaseStats => stats;
 
-    [Header("Chase / Search")]
-    [SerializeField] float chaseSpeed = 2.8f;         // Brawler-ден әлдеқайда баяу
-    [SerializeField] float searchTime = 4f;
-    [SerializeField] float searchTurnSpeed = 90f;
+    [Header("Patrol")]
+    [SerializeField] Transform[] waypoints;           // LevelRunner деректен береді
 
     [Header("Aim / Fire")]
     [SerializeField] Transform muzzle;                // мылтықтың ұшы
     [SerializeField] LineRenderer laser;              // көздеу сызығы (ескерту)
-    [SerializeField] float fireRange = 11f;           // осыдан жақын болса тоқтап көздейді
-    [SerializeField] float aimTime = 0.6f;            // ескерту ұзақтығы (0.3–0.8)
-    [SerializeField] float aimTurnSpeed = 200f;
     [SerializeField] EnemyProjectile projectilePrefab;
-    [SerializeField] float projectileSpeed = 10f;
-    [SerializeField] int damage = 1;
-    [SerializeField] float cooldown = 1.4f;
     [SerializeField] AudioClip shotClip;              // ату дыбысы
 
     public State Current { get; private set; }
@@ -53,7 +44,7 @@ public class Rifleman : EnemyBase
         AnimSpeed();
         bool sees = CanSeePlayer();
         if (sees) lastKnown = player.position;
-        bool canShoot = sees && FlatDistanceToPlayer() <= fireRange && IsOnScreen();
+        bool canShoot = sees && FlatDistanceToPlayer() <= stats.fireRange && IsOnScreen();
 
         switch (Current)
         {
@@ -70,17 +61,17 @@ public class Rifleman : EnemyBase
 
             case State.Search:
                 if (sees) { Enter(State.Chase); break; }
-                transform.Rotate(0f, searchTurnSpeed * Time.deltaTime, 0f);   // айналып қарайды
-                if (stateTime > searchTime) Enter(State.Patrol);
+                transform.Rotate(0f, stats.searchTurnSpeed * Time.deltaTime, 0f);   // айналып қарайды
+                if (stateTime > stats.searchTime) Enter(State.Patrol);
                 break;
 
             case State.Aim:
                 if (!sees) { Enter(State.Chase); break; }   // ойыншы тығылды — атпайды, қуады
-                FacePlayer(aimTurnSpeed);
+                FacePlayer(stats.aimTurnSpeed);
                 aimPoint = PlayerChest;
-                Telegraph(stateTime / aimTime);
-                DrawLaser(stateTime / aimTime);
-                if (stateTime >= aimTime) Enter(State.Fire);
+                Telegraph(stateTime / stats.aimTime);
+                DrawLaser(stateTime / stats.aimTime);
+                if (stateTime >= stats.aimTime) Enter(State.Fire);
                 break;
 
             case State.Fire:
@@ -89,8 +80,8 @@ public class Rifleman : EnemyBase
                 break;
 
             case State.Cooldown:
-                if (sees) FacePlayer(aimTurnSpeed * 0.5f);
-                if (stateTime >= cooldown) Enter(canShoot ? State.Aim : State.Chase);
+                if (sees) FacePlayer(stats.aimTurnSpeed * 0.5f);
+                if (stateTime >= stats.cooldown) Enter(canShoot ? State.Aim : State.Chase);
                 break;
         }
     }
@@ -113,7 +104,7 @@ public class Rifleman : EnemyBase
         else
         {
             agent.isStopped = false;
-            agent.speed = s == State.Chase ? chaseSpeed : patrolSpeed;
+            agent.speed = s == State.Chase ? stats.chaseSpeed : stats.patrolSpeed;
         }
 
         if (s == State.Patrol) GoToWaypoint();
@@ -124,7 +115,7 @@ public class Rifleman : EnemyBase
     {
         if (waypoints == null || waypoints.Length == 0) return;
         if (agent.pathPending || agent.remainingDistance > 0.3f) return;
-        if (waitUntil == 0f) waitUntil = Time.time + waypointWait;   // нүктеде сәл тұрады
+        if (waitUntil == 0f) waitUntil = Time.time + stats.waypointWait;   // нүктеде сәл тұрады
         if (Time.time < waitUntil) return;
         waitUntil = 0f;
         wp = (wp + 1) % waypoints.Length;
@@ -156,8 +147,10 @@ public class Rifleman : EnemyBase
         if (projectilePrefab == null || muzzle == null) return;
         Vector3 dir = (aimPoint - muzzle.position).normalized;
         EnemyProjectile p = Instantiate(projectilePrefab, muzzle.position, Quaternion.LookRotation(dir));
-        p.Launch(dir * projectileSpeed, damage, transform);
+        p.Launch(dir * stats.projectileSpeed, stats.damage, transform);
     }
+
+    public override void SetPatrolPoints(Transform[] points) => waypoints = points;
 
     // атқан ойыншыны бірден «естиді» — сол жаққа бұрылып, қуады
     protected override void OnHit()
@@ -180,7 +173,7 @@ public class Rifleman : EnemyBase
     {
         base.OnDrawGizmosSelected();
         Gizmos.color = new Color(1f, 0.4f, 0f);
-        Gizmos.DrawWireSphere(transform.position, fireRange);
+        if (stats != null) Gizmos.DrawWireSphere(transform.position, stats.fireRange);
         if (waypoints == null) return;
         Gizmos.color = Color.cyan;
         for (int i = 0; i < waypoints.Length; i++)

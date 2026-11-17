@@ -14,23 +14,13 @@ public class Brawler : EnemyBase
 {
     public enum State { Idle, Chase, WindUp, Punch, Recover }
 
-    [Header("Chase")]
-    [SerializeField] float runSpeed = 6.5f;
-    [SerializeField] float forgetTime = 3f;
-    [SerializeField] Transform[] waypoints;          // міндетті емес: көрмей тұрғанда күзетеді
-    [SerializeField] float walkSpeed = 1.5f;
-    [SerializeField] AudioClip shoutClip;            // ойыншыны көргенде айқайлайды
-    [SerializeField] float shoutCooldown = 5f;       // қайта айқайлағанша
+    [Header("Баланс (Assets/Data/Enemies/BrawlerStats.asset)")]
+    [SerializeField] BrawlerStats stats;
+    protected override EnemyStats BaseStats => stats;
 
-    [Header("Punch")]
-    [SerializeField] float attackRange = 1.7f;       // WindUp басталатын қашықтық
-    [SerializeField] float windUp = 0.6f;            // ескерту ұзақтығы (0.3–0.8)
-    [SerializeField] float hitRange = 2.0f;          // соққы жетеді
-    [SerializeField] float hitAngle = 80f;
-    [SerializeField] int damage = 1;
-    [SerializeField] float knockback = 6f;
-    [SerializeField] float punchTime = 0.35f;
-    [SerializeField] float recoverTime = 1.2f;       // cooldown
+    [Header("Chase")]
+    [SerializeField] Transform[] waypoints;          // міндетті емес: көрмей тұрғанда күзетеді
+    [SerializeField] AudioClip shoutClip;            // ойыншыны көргенде айқайлайды
 
     public State Current { get; private set; }
 
@@ -62,23 +52,23 @@ public class Brawler : EnemyBase
 
             case State.Chase:
                 agent.SetDestination(player.position);
-                if (!sees && Time.time - lastSeen > forgetTime) { Enter(State.Idle); break; }
-                if (FlatDistanceToPlayer() <= attackRange && IsOnScreen()) Enter(State.WindUp);
+                if (!sees && Time.time - lastSeen > stats.forgetTime) { Enter(State.Idle); break; }
+                if (FlatDistanceToPlayer() <= stats.attackRange && IsOnScreen()) Enter(State.WindUp);
                 break;
 
             case State.WindUp:
-                Telegraph(stateTime / windUp);
-                if (stateTime >= windUp) Enter(State.Punch);
+                Telegraph(stateTime / stats.windUp);
+                if (stateTime >= stats.windUp) Enter(State.Punch);
                 break;
 
             case State.Punch:
-                if (!hitDone && stateTime >= punchTime * 0.4f) { hitDone = true; TryHit(); }
-                if (stateTime >= punchTime) Enter(State.Recover);
+                if (!hitDone && stateTime >= stats.punchTime * 0.4f) { hitDone = true; TryHit(); }
+                if (stateTime >= stats.punchTime) Enter(State.Recover);
                 break;
 
             case State.Recover:
-                FacePlayer(120f);
-                if (stateTime >= recoverTime) Enter(sees ? State.Chase : State.Idle);
+                FacePlayer(stats.recoverTurnSpeed);
+                if (stateTime >= stats.recoverTime) Enter(sees ? State.Chase : State.Idle);
                 break;
         }
     }
@@ -95,18 +85,18 @@ public class Brawler : EnemyBase
         {
             case State.Idle:
                 agent.isStopped = false;
-                agent.speed = walkSpeed;
+                agent.speed = stats.walkSpeed;
                 agent.updateRotation = true;
                 break;
             case State.Chase:
                 agent.isStopped = false;
-                agent.speed = runSpeed;
+                agent.speed = stats.runSpeed;
                 agent.updateRotation = true;
                 // жаңа көрді (Idle-ден) — айқайлап, жүгіреді
                 if (prev == State.Idle && Time.time >= nextShout)
                 {
                     PlaySound(shoutClip, 1f, 0.1f);
-                    nextShout = Time.time + shoutCooldown;
+                    nextShout = Time.time + stats.shoutCooldown;
                 }
                 break;
             case State.WindUp:
@@ -133,7 +123,7 @@ public class Brawler : EnemyBase
     {
         if (waypoints == null || waypoints.Length == 0) { agent.isStopped = true; return; }
         if (agent.pathPending || agent.remainingDistance > 0.3f) return;
-        if (waitUntil == 0f) waitUntil = Time.time + 1.5f;
+        if (waitUntil == 0f) waitUntil = Time.time + stats.waypointWait;
         if (Time.time < waitUntil) return;
         waitUntil = 0f;
         wp = (wp + 1) % waypoints.Length;
@@ -144,12 +134,14 @@ public class Brawler : EnemyBase
     {
         Vector3 d = player.position - transform.position;
         float dy = Mathf.Abs(d.y); d.y = 0f;
-        if (d.magnitude <= hitRange && dy < 1.5f && Vector3.Angle(lockedDir, d) <= hitAngle * 0.5f)
+        if (d.magnitude <= stats.hitRange && dy < stats.hitHeight && Vector3.Angle(lockedDir, d) <= stats.hitAngle * 0.5f)
         {
-            HurtPlayer(damage);
-            if (playerRb != null) playerRb.linearVelocity = lockedDir * knockback + Vector3.up * 2.5f;
+            HurtPlayer(stats.damage);
+            if (playerRb != null) playerRb.linearVelocity = lockedDir * stats.knockback + Vector3.up * stats.knockUp;
         }
     }
+
+    public override void SetPatrolPoints(Transform[] points) => waypoints = points;
 
     protected override void OnHit()
     {
@@ -160,6 +152,6 @@ public class Brawler : EnemyBase
     {
         base.OnDrawGizmosSelected();
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, attackRange);
+        if (stats != null) Gizmos.DrawWireSphere(transform.position, stats.attackRange);
     }
 }

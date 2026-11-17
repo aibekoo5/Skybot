@@ -126,7 +126,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8533e90627f08a548bccc3f09a42e906, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Rock
-  lifeTime: 15
+  items: {fileID: 11400000, guid: 92e1cdcd28f560e4a91a1013ccbd0429, type: 2}
+  lifeTimeOverride: -1
 --- !u!54 &7495545610361668696
 Rigidbody:
   m_ObjectHideFlags: 0

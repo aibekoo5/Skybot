@@ -2,8 +2,8 @@ using UnityEngine;
 
 public class Shooter : MonoBehaviour
 {
-    public Bullet bulletPrefab;         
-    public float cooldown = 0.3f;       
+    public Bullet bulletPrefab;
+    [SerializeField] PlayerStats stats;  // ату жиілігі, оқ жылдамдығы мен зақымы
     public float muzzleDistance = 1f;    
     public float muzzleHeight = 0.5f;   
     public Transform muzzle;            // мылтықтың ұшы — бар болса, оқ сол жерден шығады
@@ -24,7 +24,7 @@ public class Shooter : MonoBehaviour
     public void Shoot(Vector3 moveDir)
     {
         if (Time.time < nextShot) return;   
-        nextShot = Time.time + cooldown;
+        nextShot = Time.time + stats.fireCooldown;
 
         Vector3 aimDir = useMovementDirection ? moveDir : transform.forward;
 
@@ -32,7 +32,7 @@ public class Shooter : MonoBehaviour
             ? muzzle.position                                   // мылтықтың ұшынан
             : transform.position + aimDir * muzzleDistance + Vector3.up * muzzleHeight;
         Bullet b = Instantiate(bulletPrefab, pos, Quaternion.LookRotation(aimDir));
-        b.Launch(aimDir);
+        b.Launch(aimDir, stats.bulletSpeed, stats.bulletDamage, stats.bulletLifeTime);
 
         if (src != null && shootClip != null) src.PlayOneShot(shootClip);
     }

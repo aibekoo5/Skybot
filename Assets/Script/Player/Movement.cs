@@ -6,15 +6,10 @@ using UnityEngine.EventSystems;
 
 public class Movement : MonoBehaviour
 {
-    // қозғалыс енді күшпен емес, жылдамдықпен беріледі
-    public float speed = 6f;            // жүгіру жылдамдығы
-    public float turnSpeed = 6f;        // бұрылу жылдамдығы (аз болса — баяу бұрылады)
-    public float jumpImpulse = 5f;      // секіру (~1.27 м биіктік)
-    public float airControl = 0.3f;     // ауадағы басқару (0..1)
-    public float acceleration = 30f;    // жерде жылдамдық қаншалықты тез өзгереді (м/с²): аз болса — «ауыр» кейіпкер
-    public float shootMoveMultiplier = 0.2f; // атып жатқанда жылдамдық (0.2 = қалыптының 20%-ы)
-    public float jumpCooldown = 0.25f;  // екі секірудің арасы (жерден шыққанша қайта секірмесін)
-    public float timeLimit = 60f;       // таймер
+    // Барлық баланс сандары (жылдамдық, секіру, ...) — PlayerStats asset-те.
+    // Таймер мен деңгей мақсаты — LevelData-да (LevelRunner басқарады).
+    [SerializeField] PlayerStats stats;
+    [SerializeField] ItemValues items;   // жауға соғылғандағы зақым
 
     // жерде тұрғанын тексеру
     public Transform feet;              // аяқтағы бос объект
@@ -26,7 +21,7 @@ public class Movement : MonoBehaviour
 
     public TextMeshProUGUI coinText;
     public TextMeshProUGUI winText;
-    public TextMeshProUGUI timerText;
+    public TextMeshProUGUI timerText;   // LevelRunner жаңартады
     public AudioSource audioSource;
     public AudioClip coinSound;
     public AudioClip jumpSound;
@@ -39,7 +34,6 @@ public class Movement : MonoBehaviour
     private int coinsCollected = 0;
     private int totalCoins;
     private bool grounded = false;      // onGround орнына
-    private float timeLeft;
     private float nextJumpTime;
     private bool gameOver = false;
 
@@ -48,7 +42,6 @@ public class Movement : MonoBehaviour
     private Shooter shooter;
 
     // ату: кейіпкер экран қараған жаққа бұрылады
-    public float aimHoldTime = 0.6f;    // атқаннан кейін қанша секунд экран жаққа қарап тұрады
     private CameraFollow camFollow;
     private float aimUntil;
     private bool shootPending;
@@ -60,6 +53,7 @@ public class Movement : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         shooter = GetComponent<Shooter>();
+        if (winText != null) winText.text = "";   // Awake-те: LevelRunner.Start-тағы хабарды өшірмеу үшін
     }
 
     void Start()
@@ -71,8 +65,7 @@ public class Movement : MonoBehaviour
         totalCoins = GameObject.FindGameObjectsWithTag("Coin").Length;
         Debug.Log("Coins in this level: " + totalCoins);
 
-        timeLeft = timeLimit;
-        winText.text = "";
+        if (stats == null) Debug.LogError("[Sky Bot] Movement: PlayerStats asset is not assigned", this);
         ShowCoins();
     }
 
@@ -91,11 +84,11 @@ public class Movement : MonoBehaviour
         // рампада жоғары жүгіргенде y > 0 болып, секіру бөгелетін. Енді оның орнына кідіріс.
         if (grounded && Time.time >= nextJumpTime)
         {
-            nextJumpTime = Time.time + jumpCooldown;
+            nextJumpTime = Time.time + stats.jumpCooldown;
             Vector3 v = rb.linearVelocity;
             v.y = 0f;                                   // әр секіру бірдей биіктікте
             rb.linearVelocity = v;
-            rb.AddForce(Vector3.up * jumpImpulse, ForceMode.Impulse);
+            rb.AddForce(Vector3.up * stats.jumpImpulse, ForceMode.Impulse);
 
             if (audioSource != null && jumpSound != null)
                 audioSource.PlayOneShot(jumpSound);
@@ -148,22 +141,9 @@ public class Movement : MonoBehaviour
                 Quaternion face = Quaternion.LookRotation(FlatAim());
                 rb.rotation = face;
                 transform.rotation = face;
-                aimUntil = Time.time + aimHoldTime;
+                aimUntil = Time.time + stats.aimHoldTime;
                 shootPending = true;
             }
-        }
-
-        // таймер (timeLimit = 0 болса — таймер жоқ, мысалы бастық деңгейінде)
-        if (timeLimit > 0)
-        {
-            timeLeft -= Time.deltaTime;
-            if (timeLeft <= 0)
-            {
-                timeLeft = 0;
-                EndGame("Time's up!");
-                Invoke(nameof(Restart), 2f);    // уақыт бітті — деңгей қайта басталады
-            }
-            if (timerText != null) timerText.text = "Time: " + Mathf.CeilToInt(timeLeft);
         }
 
         // аренадан құлау
@@ -184,14 +164,14 @@ public class Movement : MonoBehaviour
 
         // атып жатқанда баяу жүреді, ату тоқтаған соң қалпына келеді
         bool shooting = Time.time < aimUntil;
-        Vector3 target = dir * speed * (shooting ? shootMoveMultiplier : 1f);
+        Vector3 target = dir * stats.moveSpeed * (shooting ? stats.shootMoveMultiplier : 1f);
 
         // жерде: жылдамдық үдеумен өзгереді — WASD-ты жылдам кезек басса да бір орында дірілдемейді
         // ауада: бұрынғыдай — әр қадам сайын airControl үлесіне жақындайды (тез бұрылады)
         Vector3 current = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
         Vector3 horizontal = grounded
-            ? Vector3.MoveTowards(current, target, acceleration * Time.fixedDeltaTime)
-            : Vector3.Lerp(current, target, airControl);
+            ? Vector3.MoveTowards(current, target, stats.acceleration * Time.fixedDeltaTime)
+            : Vector3.Lerp(current, target, stats.airControl);
 
         // y (гравитация, секіру) өзгермейді
         rb.linearVelocity = new Vector3(horizontal.x, rb.linearVelocity.y, horizontal.z);
@@ -205,7 +185,7 @@ public class Movement : MonoBehaviour
         else if (dir.sqrMagnitude > 0.01f)
         {
             Quaternion look = Quaternion.LookRotation(dir);
-            rb.MoveRotation(Quaternion.Slerp(rb.rotation, look, turnSpeed * Time.fixedDeltaTime));
+            rb.MoveRotation(Quaternion.Slerp(rb.rotation, look, stats.turnSpeed * Time.fixedDeltaTime));
         }
     }
 
@@ -219,6 +199,7 @@ public class Movement : MonoBehaviour
             Destroy(other.gameObject);
             coinsCollected++;
             ShowCoins();
+            if (LevelRunner.Current != null) LevelRunner.Current.OnCoinCollected();
 
             if (audioSource != null && coinSound != null)
                 audioSource.PlayOneShot(coinSound);
@@ -229,18 +210,13 @@ public class Movement : MonoBehaviour
 
         if (other.CompareTag("Exit"))
         {
-            if (coinsCollected >= totalCoins)
-            {
-                EndGame("Level complete!");
-                if (audioSource != null && winSound != null)
-                    audioSource.PlayOneShot(winSound);
-                Invoke(nameof(NextLevel), 2f);  // 2 секундтан соң келесі деңгей
-            }
+            // мақсатты (монета / барлық жау) LevelData бойынша LevelRunner тексереді
+            LevelRunner runner = LevelRunner.Current;
+            if (runner == null) return;
+            if (runner.CanExit(coinsCollected >= totalCoins, out string reason))
+                runner.Complete();                      // ұпай → save.json → келесі деңгей
             else
-            {
-                if (messageRoutine != null) StopCoroutine(messageRoutine);
-                messageRoutine = StartCoroutine(ShowMessage("Collect all coins first!"));
-            }
+                ShowMessage(reason, messageTime);
         }
     }
 
@@ -251,7 +227,7 @@ public class Movement : MonoBehaviour
         if (other.gameObject.CompareTag("Enemy"))
         {
             Health h = GetComponent<Health>();
-            if (h != null) h.TakeDamage(1);
+            if (h != null) h.TakeDamage(items.enemyContactDamage);
             else Restart();
         }
     }
@@ -267,7 +243,7 @@ public class Movement : MonoBehaviour
 
         // кейіпкерге қатысты жылдамдық: x — жанына, z — алға; 1 = атқандағы толық жылдамдық
         Vector3 local = transform.InverseTransformDirection(flatVelocity);
-        float full = Mathf.Max(speed * shootMoveMultiplier, 0.1f);
+        float full = Mathf.Max(stats.moveSpeed * stats.shootMoveMultiplier, 0.1f);
         Vector2 m = Vector2.ClampMagnitude(new Vector2(local.x, local.z) / full, 1f);
         anim.SetFloat("MoveX", m.x, 0.1f, Time.deltaTime);
         anim.SetFloat("MoveZ", m.y, 0.1f, Time.deltaTime);
@@ -296,7 +272,8 @@ public class Movement : MonoBehaviour
         return dir.normalized;
     }
 
-    void EndGame(string message)
+    // ойыншы тоқтайды, экранның ортасында хабар (LevelRunner шақырады)
+    public void EndGame(string message)
     {
         gameOver = true;
         winText.text = message;
@@ -309,10 +286,9 @@ public class Movement : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
-    // Build Settings ретімен: Level1 → Level 2 → Level3_Boss
-    void NextLevel()
+    public void PlayWinSound()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        if (audioSource != null && winSound != null) audioSource.PlayOneShot(winSound);
     }
 
     void ShowCoins()
@@ -320,10 +296,18 @@ public class Movement : MonoBehaviour
         coinText.text = "Coins: " + coinsCollected + " / " + totalCoins;
     }
 
-    System.Collections.IEnumerator ShowMessage(string message)
+    // уақытша хабар (мысалы, деңгей атауы немесе «Collect all coins first!»)
+    public void ShowMessage(string message, float seconds)
+    {
+        if (gameOver) return;
+        if (messageRoutine != null) StopCoroutine(messageRoutine);
+        messageRoutine = StartCoroutine(MessageRoutine(message, seconds));
+    }
+
+    System.Collections.IEnumerator MessageRoutine(string message, float seconds)
     {
         winText.text = message;
-        yield return new WaitForSeconds(messageTime);
+        yield return new WaitForSeconds(seconds);
 
         if (!gameOver)
             winText.text = "";

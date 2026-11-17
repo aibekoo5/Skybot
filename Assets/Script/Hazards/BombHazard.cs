@@ -1,48 +1,45 @@
 using UnityEngine;
 
-
+// Бомба: ойыншыға тисе — бірден зақым; жерге түссе — фитиль, сосын жарылыс.
+// Зақым, фитиль, жарылыс радиусы — ItemValues asset-те.
 public class BombHazard : Hazard
 {
-    public float fuse = 2f;            
-    public GameObject explosionPrefab;     
-    public AudioClip explodeClip;         
-    public float blastRadius = 0f;        
-    public int blastDamage = 2;
+    public GameObject explosionPrefab;
+    public AudioClip explodeClip;
 
-    bool armed;                            
+    bool armed;
 
     protected override void OnCollisionEnter(Collision c)
     {
         if (c.gameObject.CompareTag("Player"))
         {
-            base.OnCollisionEnter(c);      
-            PlayFx();                      
+            base.OnCollisionEnter(c);
+            PlayFx();
             return;
         }
 
-     
         if (!armed)
         {
             armed = true;
-            Invoke(nameof(Explode), fuse);
+            Invoke(nameof(Explode), items.bombFuse);
         }
     }
 
     protected override void OnHitPlayer(Health player)
     {
-        player.TakeDamage(2);            
+        player.TakeDamage(items.bombHitDamage);
     }
 
     void Explode()
     {
-        if (blastRadius > 0f)              
+        if (items.bombBlastRadius > 0f)
         {
-            Collider[] hits = Physics.OverlapSphere(transform.position, blastRadius);
+            Collider[] hits = Physics.OverlapSphere(transform.position, items.bombBlastRadius);
             foreach (Collider col in hits)
             {
                 if (!col.CompareTag("Player")) continue;
                 Health h = col.GetComponentInParent<Health>();
-                if (h != null) { h.TakeDamage(blastDamage); break; }
+                if (h != null) { h.TakeDamage(items.bombBlastDamage); break; }
             }
         }
         PlayFx();

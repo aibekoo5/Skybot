@@ -9,15 +9,20 @@ using TMPro;
 // Көру (CanSeePlayer): 1) қашықтық ≤ viewDistance  2) бұрыш ≤ viewAngle/2
 //                      3) көзден ойыншының кеудесіне Raycast — қабырға тұрса, көрмейді.
 // Әділдік: шабуыл тек жау экранда көрініп тұрғанда басталады (IsOnScreen).
+//
+// БАЛАНС САНДАРЫ КОДТА ЖОҚ: HP, көру, жылдамдық, зақым — әр жаудың EnemyStats asset-інде
+// (Assets/Data/Enemies). Prefab тек сілтеме ұстайды, сондықтан asset-ті өзгертсең — барлық
+// осы түрдегі жау бірден өзгереді.
 public abstract class EnemyBase : MonoBehaviour
 {
-    [Header("Денсаулық")]
-    [SerializeField] protected int maxHp = 3;
+    // әр жау өз stats asset-ін береді (Rifleman → RiflemanStats, ...)
+    protected abstract EnemyStats BaseStats { get; }
+    protected float viewDistance => BaseStats.viewDistance;
+    protected float viewAngle => BaseStats.viewAngle;
+    public int ScoreValue => BaseStats != null ? BaseStats.scoreValue : 0;
 
     [Header("Көру")]
     [SerializeField] protected Transform eye;                 // көз (Raycast осыдан басталады)
-    [SerializeField] protected float viewDistance = 14f;
-    [SerializeField, Range(10f, 360f)] protected float viewAngle = 120f;
     [SerializeField] protected LayerMask sightBlockers = ~0;  // көруді не бөгейді (қабырғалар)
     [SerializeField] protected float playerChestHeight = 1.2f;
 
@@ -73,7 +78,8 @@ public abstract class EnemyBase : MonoBehaviour
 
     protected virtual void Start()
     {
-        hp = maxHp;
+        if (BaseStats == null) { Debug.LogError($"[Sky Bot] {name}: stats asset is not assigned", this); enabled = false; return; }
+        hp = BaseStats.maxHp;
         cam = Camera.main;
 
         // ойыншыны бір рет табамыз (Update-те іздемейміз)
@@ -231,6 +237,9 @@ public abstract class EnemyBase : MonoBehaviour
 
     protected virtual void OnHit() { }   // мысалы, атқанда ойыншыны бірден «көреді»
 
+    // LevelRunner деректен (LevelData) патруль нүктелерін береді. Патрульсіз жау елемейді.
+    public virtual void SetPatrolPoints(Transform[] points) { }
+
     protected virtual void Die()
     {
         dead = true;
@@ -268,6 +277,7 @@ public abstract class EnemyBase : MonoBehaviour
 
     protected virtual void OnDrawGizmosSelected()
     {
+        if (BaseStats == null) return;
         // көру конусы — Scene терезесінде
         Vector3 o = eye != null ? eye.position : transform.position + Vector3.up * 1.5f;
         Gizmos.color = Color.yellow;

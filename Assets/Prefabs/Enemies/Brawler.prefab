@@ -223,10 +223,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90db53263f25b414a8fd612efeca10c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Brawler
-  maxHp: 2
   eye: {fileID: 322108609927876462}
-  viewDistance: 14
-  viewAngle: 120
   sightBlockers:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -240,20 +237,9 @@ MonoBehaviour:
   telegraphClip: {fileID: 0}
   stateLabel: {fileID: 7310345713327257249}
   showStateLabel: 1
-  runSpeed: 6.5
-  forgetTime: 3
+  stats: {fileID: 11400000, guid: 9a76582a92dc0bc44ab13675c6c52318, type: 2}
   waypoints: []
-  walkSpeed: 1.5
   shoutClip: {fileID: 8300000, guid: 2311232d3549478db91d5734db04b47d, type: 3}
-  shoutCooldown: 5
-  attackRange: 1.7
-  windUp: 0.6
-  hitRange: 2
-  hitAngle: 80
-  damage: 1
-  knockback: 6
-  punchTime: 0.35
-  recoverTime: 1.2
 --- !u!1 &4533853243043920889
 GameObject:
   m_ObjectHideFlags: 0

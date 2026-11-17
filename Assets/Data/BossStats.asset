@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51108494df08d9d46b405db5ed31784a, type: 3}
+  m_Name: BossStats
+  m_EditorClassIdentifier: Assembly-CSharp::BossStats
+  maxHp: 10
+  scoreValue: 1000
+  startDelay: 2
+  pause: 2
+  fanCount: 3
+  fanAngle: 40
+  fireballSpeed: 8
+  rockCount: 3
+  rockRadius: 3
+  warningTime: 1
+  rockLifeTime: 3
+  phase2AtHpFraction: 0.5
+  phase2PauseMultiplier: 0.5
+  phase2ExtraFan: 2
+  phase2ExtraFanAngle: 30
+  phase2ExtraRocks: 2

@@ -1,31 +1,28 @@
 using UnityEngine;
 
-
+// Аспаннан заттар (тас, жүрек) түсіреді. Барлық сандары — LevelData-дағы HazardWave.
+// Сахнаға қолмен қойылмайды: LevelRunner деңгей басталғанда жасап, Begin(wave) шақырады.
 public class Spawner : MonoBehaviour
 {
-    public Hazard[] prefabs;            
-    public float firstDelay = 1f;
-    public float interval = 2f;
+    HazardWave wave;
 
-    public float rangeX = 8f;          
-    public float rangeZ = 8f;          
-    public float spawnHeight = 6f;     
-
-    void Start()
+    public void Begin(HazardWave w)
     {
-
-        InvokeRepeating(nameof(Spawn), firstDelay, interval);
+        wave = w;
+        transform.position = w.center;
+        if (w.hazards != null && w.hazards.Length > 0)
+            InvokeRepeating(nameof(Spawn), w.firstDelay, w.interval);
     }
 
     void Spawn()
     {
-
-        Hazard pick = prefabs[Random.Range(0, prefabs.Length)];
+        Hazard pick = wave.hazards[Random.Range(0, wave.hazards.Length)];
+        if (pick == null) return;
 
         Vector3 pos = new Vector3(
-            transform.position.x + Random.Range(-rangeX, rangeX),
-            spawnHeight,
-            transform.position.z + Random.Range(-rangeZ, rangeZ));
+            wave.center.x + Random.Range(-wave.halfSize.x, wave.halfSize.x),
+            wave.spawnHeight,
+            wave.center.z + Random.Range(-wave.halfSize.y, wave.halfSize.y));
 
         Instantiate(pick, pos, Quaternion.identity);
     }

@@ -20,21 +20,12 @@ public class MachineGunTurret : EnemyBase
     [SerializeField] LineRenderer laser;
     [SerializeField] Renderer barrelRenderer;        // қызып кететін ұңғы
 
-    [Header("Scan")]
-    [SerializeField] float scanAngle = 90f;          // күзететін сектор (басы ±45°)
-    [SerializeField] float scanSpeed = 0.6f;
-    [SerializeField] float trackTurnSpeed = 160f;    // нысанаға бұрылу (SpinUp)
+    [Header("Баланс (Assets/Data/Enemies/MachineGunStats.asset)")]
+    [SerializeField] MachineGunStats stats;
+    protected override EnemyStats BaseStats => stats;
 
     [Header("Fire")]
-    [SerializeField] float spinUpTime = 0.7f;        // ескерту ұзақтығы (0.3–0.8)
-    [SerializeField] int burstCount = 8;
-    [SerializeField] float burstInterval = 0.11f;
-    [SerializeField] float burstTurnSpeed = 40f;     // ату кезінде баяу бұрылады — құтылуға болады
-    [SerializeField] float spread = 2.5f;            // шашырау (градус)
     [SerializeField] EnemyProjectile projectilePrefab;
-    [SerializeField] float projectileSpeed = 15f;
-    [SerializeField] int damage = 1;
-    [SerializeField] float overheatTime = 2f;        // cooldown
     [SerializeField] AudioClip shotClip;             // әр оқтың дыбысы
 
     public State Current { get; private set; }
@@ -62,37 +53,37 @@ public class MachineGunTurret : EnemyBase
         switch (Current)
         {
             case State.Scan:
-                float yaw = Mathf.Sin(Time.time * scanSpeed) * scanAngle * 0.5f;
-                TurnHead(Quaternion.Euler(0, transform.eulerAngles.y + yaw, 0), 60f);
+                float yaw = Mathf.Sin(Time.time * stats.scanSpeed) * stats.scanAngle * 0.5f;
+                TurnHead(Quaternion.Euler(0, transform.eulerAngles.y + yaw, 0), stats.scanTurnSpeed);
                 spin = Mathf.MoveTowards(spin, 0f, 600f * Time.deltaTime);
                 if (sees && IsOnScreen()) Enter(State.SpinUp);
                 break;
 
             case State.SpinUp:
                 if (!sees) { Enter(State.Scan); break; }
-                AimHead(trackTurnSpeed);
-                spin = Mathf.Lerp(0f, 1440f, stateTime / spinUpTime);   // ұңғылар үдеп айналады
-                Telegraph(stateTime / spinUpTime);
-                DrawLaser(stateTime / spinUpTime);
-                if (stateTime >= spinUpTime) Enter(State.Burst);
+                AimHead(stats.trackTurnSpeed);
+                spin = Mathf.Lerp(0f, 1440f, stateTime / stats.spinUpTime);   // ұңғылар үдеп айналады (тек көрініс)
+                Telegraph(stateTime / stats.spinUpTime);
+                DrawLaser(stateTime / stats.spinUpTime);
+                if (stateTime >= stats.spinUpTime) Enter(State.Burst);
                 break;
 
             case State.Burst:
-                AimHead(burstTurnSpeed);
+                AimHead(stats.burstTurnSpeed);
                 spin = 1440f;
                 if (Time.time >= nextShot)
                 {
                     Shoot();
                     shotsLeft--;
-                    nextShot = Time.time + burstInterval;
+                    nextShot = Time.time + stats.burstInterval;
                     if (shotsLeft <= 0) Enter(State.Overheat);
                 }
                 break;
 
             case State.Overheat:
                 spin = Mathf.MoveTowards(spin, 0f, 900f * Time.deltaTime);
-                Heat(1f - stateTime / overheatTime);
-                if (stateTime >= overheatTime) Enter(sees && IsOnScreen() ? State.SpinUp : State.Scan);
+                Heat(1f - stateTime / stats.overheatTime);
+                if (stateTime >= stats.overheatTime) Enter(sees && IsOnScreen() ? State.SpinUp : State.Scan);
                 break;
         }
 
@@ -106,7 +97,7 @@ public class MachineGunTurret : EnemyBase
         ShowState(s.ToString());
         if (laser != null) laser.enabled = s == State.SpinUp;
         if (s == State.SpinUp) PlayTelegraphSound();
-        if (s == State.Burst) { shotsLeft = burstCount; nextShot = Time.time; }
+        if (s == State.Burst) { shotsLeft = stats.burstCount; nextShot = Time.time; }
         if (s == State.Scan) Heat(0f);
     }
 
@@ -148,9 +139,9 @@ public class MachineGunTurret : EnemyBase
         // басы қараған жаққа (ойыншыға емес!) — сондықтан жанына жүгірсе құтылады
         Vector3 dir = Forward;
         dir.y = (PlayerChest - muzzle.position).normalized.y;
-        dir = Quaternion.Euler(Random.Range(-spread, spread), Random.Range(-spread, spread), 0f) * dir.normalized;
+        dir = Quaternion.Euler(Random.Range(-stats.spread, stats.spread), Random.Range(-stats.spread, stats.spread), 0f) * dir.normalized;
         EnemyProjectile p = Instantiate(projectilePrefab, muzzle.position, Quaternion.LookRotation(dir));
-        p.Launch(dir * projectileSpeed, damage, transform);
+        p.Launch(dir * stats.projectileSpeed, stats.damage, transform);
     }
 
     void Heat(float k)

@@ -4,8 +4,9 @@ using UnityEngine.SceneManagement;
 
 public class Health : MonoBehaviour
 {
-    public int maxHp = 3;
-    public int hp = 3;
+    [SerializeField] PlayerStats stats;        // maxHp, қорғаныс уақыты — asset-те
+    public int hp;
+    public int MaxHp => stats.maxHp;
 
     public AudioClip hurtClip;
     public AudioClip healClip;
@@ -17,7 +18,7 @@ public class Health : MonoBehaviour
 
     void Start()
     {
-        hp = maxHp;
+        hp = stats.maxHp;
 
         renderers = GetComponentsInChildren<Renderer>();
         src = GetComponent<AudioSource>();
@@ -55,7 +56,7 @@ public class Health : MonoBehaviour
 
     public void Heal(int amount)
     {
-        hp = Mathf.Min(hp + amount, maxHp);
+        hp = Mathf.Min(hp + amount, stats.maxHp);
         Debug.Log("HEAL! HP: " + hp);
         if (src != null && healClip != null) src.PlayOneShot(healClip);
 
@@ -65,10 +66,11 @@ public class Health : MonoBehaviour
     IEnumerator Invincibility()
     {
         invincible = true;
-        for (int i = 0; i < 10; i++)
+        int blinks = Mathf.CeilToInt(stats.invincibleTime / stats.blinkInterval);
+        for (int i = 0; i < blinks; i++)
         {
             SetVisible(i % 2 == 1);
-            yield return new WaitForSeconds(0.2f);
+            yield return new WaitForSeconds(stats.blinkInterval);
         }
         SetVisible(true);
         invincible = false;

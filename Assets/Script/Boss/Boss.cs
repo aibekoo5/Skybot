@@ -3,11 +3,15 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-// Level 3 бастығы: HP, екі шабуыл (оқ желпуіші + тас жаңбыры), екінші фаза
+// Level 3 бастығы: HP, екі шабуыл (оқ желпуіші + тас жаңбыры), екінші фаза.
+// Барлық сандар — BossStats asset-те. Asset-ті ӨЗГЕРТПЕЙМІЗ: Start-та өз айнымалыларымызға
+// көшіреміз, екінші фазада тек сол көшірме өзгереді.
 public class Boss : MonoBehaviour
 {
+    [Header("Баланс (Assets/Data/BossStats.asset)")]
+    [SerializeField] BossStats stats;
+
     [Header("HP")]
-    public int maxHp = 10;
     public Slider hpBar;                    // экрандағы HP жолағы
 
     [Header("Шабуыл")]
@@ -15,17 +19,17 @@ public class Boss : MonoBehaviour
     public BossProjectile fireballPrefab;   // желпуіш оғы
     public Hazard rockPrefab;               // жоғарыдан түсетін тас
     public GameObject warningPrefab;        // қызыл белгі "!" (collider-сіз)
-    public float pause = 2f;                // шабуыл арасындағы үзіліс — ойыншы ату үшін
-    public int fanCount = 3;                // желпуіштегі оқ саны
-    public float fanAngle = 40f;            // желпуіштің ені (градус)
-    public int rockCount = 3;               // бір жаңбырдағы тас саны
-    public float warningTime = 1f;          // белгіден кейін тас түскенше уақыт
     public LayerMask groundMask;            // тас түсетін еден (Ground layer)
 
     [Header("Дыбыс")]
     public AudioClip shootClip;
     public AudioClip hitClip;
     public AudioClip deathClip;
+
+    // ағымдағы мәндер (екінші фазада өзгереді)
+    float pause;
+    int fanCount, rockCount;
+    float fanAngle;
 
     int hp;
     bool phase2;
@@ -34,12 +38,16 @@ public class Boss : MonoBehaviour
 
     void Start()
     {
-        hp = maxHp;
+        hp = stats.maxHp;
+        pause = stats.pause;
+        fanCount = stats.fanCount;
+        fanAngle = stats.fanAngle;
+        rockCount = stats.rockCount;
         src = GetComponent<AudioSource>();
 
         if (hpBar != null)
         {
-            hpBar.maxValue = maxHp;
+            hpBar.maxValue = stats.maxHp;
             hpBar.value = hp;
         }
 
@@ -60,7 +68,7 @@ public class Boss : MonoBehaviour
     // шабуыл → үзіліс → шабуыл → үзіліс ...
     IEnumerator AttackLoop()
     {
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(stats.startDelay);
 
         while (!dead)
         {
@@ -88,7 +96,7 @@ public class Boss : MonoBehaviour
             Vector3 pos = transform.position + dir * 2.5f;
             pos.y = player.position.y + 0.5f;
             BossProjectile p = Instantiate(fireballPrefab, pos, Quaternion.LookRotation(dir));
-            p.Launch(dir);
+            p.Launch(dir, stats.fireballSpeed);
         }
 
         if (src != null && shootClip != null) src.PlayOneShot(shootClip);
@@ -105,7 +113,8 @@ public class Boss : MonoBehaviour
         for (int i = 0; i < rockCount; i++)
         {
             // ойыншының айналасынан кездейсоқ нүкте, еденді жоғарыдан сәулемен табамыз
-            Vector3 p = player.position + new Vector3(Random.Range(-3f, 3f), 5f, Random.Range(-3f, 3f));
+            float r = stats.rockRadius;
+            Vector3 p = player.position + new Vector3(Random.Range(-r, r), 5f, Random.Range(-r, r));
             if (!Physics.Raycast(p, Vector3.down, out RaycastHit hit, 20f, groundMask)) continue;
 
             points[i] = hit.point;
@@ -113,14 +122,14 @@ public class Boss : MonoBehaviour
                 warnings[i] = Instantiate(warningPrefab, hit.point + Vector3.up * 0.02f, Quaternion.identity);
         }
 
-        yield return new WaitForSeconds(warningTime);   // ойыншыға қашуға уақыт
+        yield return new WaitForSeconds(stats.warningTime);   // ойыншыға қашуға уақыт
 
         for (int i = 0; i < rockCount; i++)
         {
             if (warnings[i] == null) continue;          // бұл нүктеде еден табылмады
             Destroy(warnings[i]);
             Hazard rock = Instantiate(rockPrefab, points[i] + Vector3.up * 8f, Quaternion.identity);
-            rock.lifeTime = 3f;                         // арена тастарға толып кетпесін
+            rock.lifeTimeOverride = stats.rockLifeTime;  // арена тастарға толып кетпесін
         }
     }
 
@@ -136,13 +145,13 @@ public class Boss : MonoBehaviour
         Debug.Log("BOSS HP: " + hp);
 
         // екінші фаза: жартысынан төмен — жиірек атады, желпуіш кеңірек
-        if (!phase2 && hp <= maxHp / 2)
+        if (!phase2 && hp <= stats.maxHp * stats.phase2AtHpFraction)
         {
             phase2 = true;
-            pause *= 0.5f;
-            fanCount += 2;
-            fanAngle += 30f;
-            rockCount += 2;
+            pause *= stats.phase2PauseMultiplier;
+            fanCount += stats.phase2ExtraFan;
+            fanAngle += stats.phase2ExtraFanAngle;
+            rockCount += stats.phase2ExtraRocks;
             Debug.Log("BOSS: PHASE 2");
         }
 
@@ -154,11 +163,13 @@ public class Boss : MonoBehaviour
         dead = true;
         StopAllCoroutines();
         if (deathClip != null) AudioSource.PlayClipAtPoint(deathClip, transform.position);
-        Invoke(nameof(LoadWin), 2f);
-    }
 
-    void LoadWin()
-    {
-        SceneManager.LoadScene("Win");
+        // деңгей бітті: ұпай → save.json → Win (LevelRunner мен LevelList шешеді)
+        if (LevelRunner.Current != null)
+        {
+            LevelRunner.Current.AddScore(stats.scoreValue);
+            LevelRunner.Current.Complete();
+        }
+        else SceneManager.LoadScene("Win");
     }
 }

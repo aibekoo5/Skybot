@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e17b3efcec76e434ea15bee2c6fc4f9e, type: 3}
+  m_Name: BrawlerStats
+  m_EditorClassIdentifier: Assembly-CSharp::BrawlerStats
+  maxHp: 2
+  viewDistance: 14
+  viewAngle: 120
+  damage: 1
+  scoreValue: 150
+  runSpeed: 12
+  walkSpeed: 1.5
+  waypointWait: 1.5
+  forgetTime: 3
+  shoutCooldown: 5
+  attackRange: 1.7
+  windUp: 0.6
+  hitRange: 2
+  hitAngle: 80
+  hitHeight: 1.5
+  knockback: 6
+  knockUp: 2.5
+  punchTime: 0.35
+  recoverTime: 1.2
+  recoverTurnSpeed: 120

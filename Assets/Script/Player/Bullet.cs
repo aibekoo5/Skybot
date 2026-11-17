@@ -1,26 +1,19 @@
 using UnityEngine;
 
 
+// Ойыншының оғы. Жылдамдық, зақым, өмір уақыты — Shooter береді (PlayerStats asset-тен).
 public class Bullet : MonoBehaviour
 {
-    public float speed = 12f;
-    public float lifeTime = 3f;      
+    int damage;
 
-    void Start()
+    public void Launch(Vector3 direction, float speed, int dmg, float lifeTime)
     {
-     
-        Destroy(gameObject, lifeTime);
-    }
-
-    public void Launch(Vector3 direction)
-    {
+        damage = dmg;
         Rigidbody rb = GetComponent<Rigidbody>();
         rb.useGravity = false;
         rb.linearVelocity = direction.normalized * speed;
-
+        Destroy(gameObject, lifeTime);
     }
-
-    public int damage = 1;
 
     // оқтың collider-і Is Trigger — сондықтан OnTriggerEnter
     void OnTriggerEnter(Collider other)
@@ -51,7 +44,7 @@ public class Bullet : MonoBehaviour
     {
         Boss boss = target.GetComponentInParent<Boss>();
         if (boss == null) return false;
-        boss.TakeHit(1);
+        boss.TakeHit(damage);
         Destroy(gameObject);
         return true;
     }

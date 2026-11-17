@@ -13,6 +13,11 @@ public class Spikes : Hazard
         if (h != null) OnHitPlayer(h);      // жыпылықтау кезінде Health өзі елемейді
     }
 
+    protected override void OnHitPlayer(Health player)
+    {
+        player.TakeDamage(items.spikeDamage);
+    }
+
     // үстінде тұра берсе де зақым алады
     void OnCollisionStay(Collision c)
     {
