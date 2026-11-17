@@ -60,12 +60,12 @@ public static class LevelJumpTuner
     {
         var scene = EditorSceneManager.OpenScene(path, OpenSceneMode.Single);
 
-        var mv = Object.FindFirstObjectByType<Movement>(FindObjectsInactive.Include);
-        if (mv != null)
+        // Assignment 11: секіру енді PlayerStats asset-те (Assets/Data/PlayerStats.asset)
+        var stats = AssetDatabase.LoadAssetAtPath<PlayerStats>("Assets/Data/PlayerStats.asset");
+        if (stats != null)
         {
-            Undo.RecordObject(mv, "Jump");
-            mv.jumpImpulse = JumpImpulse;
-            EditorUtility.SetDirty(mv);
+            stats.jumpImpulse = JumpImpulse;
+            EditorUtility.SetDirty(stats);
         }
 
         var cam = Object.FindFirstObjectByType<CameraFollow>(FindObjectsInactive.Include);

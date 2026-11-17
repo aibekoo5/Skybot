@@ -2203,14 +2203,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2cf99e602e8b78340964d708ccc795d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Movement
-  speed: 6
-  turnSpeed: 6
-  jumpImpulse: 5
-  airControl: 0.4
-  acceleration: 30
-  shootMoveMultiplier: 0.2
-  jumpCooldown: 0.25
-  timeLimit: 0
+  stats: {fileID: 11400000, guid: c8c280c6058931d4b9d0f8e32a3c979f, type: 2}
+  items: {fileID: 11400000, guid: 92e1cdcd28f560e4a91a1013ccbd0429, type: 2}
   feet: {fileID: 79528668}
   groundRadius: 0.2
   groundMask:
@@ -2226,7 +2220,6 @@ MonoBehaviour:
   jumpSound: {fileID: 8300000, guid: 1772fe2afff5c214783f44978d58a1ec, type: 3}
   winSound: {fileID: 8300000, guid: f697f25c4b524b544aee86cf36488bdc, type: 3}
   messageTime: 2
-  aimHoldTime: 0.6
 --- !u!54 &606805358
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -2475,7 +2468,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e46846b64d1c87749a1b53d4567eb9be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Health
-  maxHp: 3
+  stats: {fileID: 11400000, guid: c8c280c6058931d4b9d0f8e32a3c979f, type: 2}
   hp: 3
   hurtClip: {fileID: 8300000, guid: 8d08adfc64987424796c564faf89f4f6, type: 3}
   healClip: {fileID: 8300000, guid: 21965665526b8454799f9f4998bcfdca, type: 3}
@@ -2492,7 +2485,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Shooter
   bulletPrefab: {fileID: 2182968011700902023, guid: 482b8418528397b438caf688f58d08f3, type: 3}
-  cooldown: 0.3
+  stats: {fileID: 11400000, guid: c8c280c6058931d4b9d0f8e32a3c979f, type: 2}
   muzzleDistance: 1
   muzzleHeight: 0.5
   muzzle: {fileID: 1549232371}
@@ -5130,17 +5123,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df80122589232974580a066d7cebd87a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Boss
-  maxHp: 10
+  stats: {fileID: 11400000, guid: 4d73fc1fb44300a48a1f0cd7e796ff46, type: 2}
   hpBar: {fileID: 2134549988}
   player: {fileID: 606805355}
   fireballPrefab: {fileID: 6206615344683485089, guid: 32346547d84ca5f44bc9cb029fae5d64, type: 3}
   rockPrefab: {fileID: 5954498566871750226, guid: 7d3ee687cd822524bbe6f9fd4c6a2f2a, type: 3}
   warningPrefab: {fileID: 2719811786135954867, guid: 7def1ed9c39544446940efbfea4031c0, type: 3}
-  pause: 2
-  fanCount: 3
-  fanAngle: 40
-  rockCount: 3
-  warningTime: 1
   groundMask:
     serializedVersion: 2
     m_Bits: 8
@@ -6100,6 +6088,54 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &1953880885
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1953880887}
+  - component: {fileID: 1953880886}
+  m_Layer: 0
+  m_Name: LevelRunner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1953880886
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1953880885}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3215c949f2cc01c4da63fd14e9c9fe71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LevelRunner
+  items: {fileID: 11400000, guid: 92e1cdcd28f560e4a91a1013ccbd0429, type: 2}
+  introTime: 2.5
+  endDelay: 2
+  winScene: Win
+--- !u!4 &1953880887
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1953880885}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1958636582
 GameObject:
   m_ObjectHideFlags: 0
@@ -6576,3 +6612,4 @@ SceneRoots:
   - {fileID: 1628442149}
   - {fileID: 36955480}
   - {fileID: 1730981616}
+  - {fileID: 1953880887}

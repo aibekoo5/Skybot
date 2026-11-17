@@ -356,6 +356,7 @@ public static class OutpostLevelBuilder
         Set(e, "shotClip", Sfx("rifle_shot"));
         var so = new SerializedObject(e);
         so.FindProperty("bodyTint").colorValue = RedTint;   // Brawler сияқты қызыл
+        so.FindProperty("stats").objectReferenceValue = AssetDatabase.LoadAssetAtPath<RiflemanStats>("Assets/Data/Enemies/RiflemanStats.asset");
         so.ApplyModifiedPropertiesWithoutUndo();
         return Save(root, "Rifleman");
     }
@@ -379,7 +380,7 @@ public static class OutpostLevelBuilder
         var so = new SerializedObject(e);
         so.FindProperty("bodyTint").colorValue = RedTint;
         so.FindProperty("shoutClip").objectReferenceValue = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/Enemies/surprised-male-scream.mp3");
-        so.FindProperty("maxHp").intValue = 2;
+        so.FindProperty("stats").objectReferenceValue = AssetDatabase.LoadAssetAtPath<BrawlerStats>("Assets/Data/Enemies/BrawlerStats.asset");   // Assignment 11: баланс asset-те
         so.ApplyModifiedPropertiesWithoutUndo();
         return Save(root, "Brawler");
     }
@@ -442,10 +443,8 @@ public static class OutpostLevelBuilder
         Set(e, "projectilePrefab", projectile.GetComponent<EnemyProjectile>());
         SetRendererArray(e, new[] { body.GetComponent<Renderer>(), ammo.GetComponent<Renderer>(), shield.GetComponent<Renderer>() });
         var so = new SerializedObject(e);
-        so.FindProperty("maxHp").intValue = 4;
+        so.FindProperty("stats").objectReferenceValue = AssetDatabase.LoadAssetAtPath<MachineGunStats>("Assets/Data/Enemies/MachineGunStats.asset");
         so.FindProperty("shotClip").objectReferenceValue = Sfx("mg_shot");
-        so.FindProperty("viewAngle").floatValue = 140f;   // бас бұрыла алатын сектор
-        so.FindProperty("viewDistance").floatValue = 16f;
         so.ApplyModifiedPropertiesWithoutUndo();
         return Save(root, "MachineGun");
     }
@@ -593,7 +592,6 @@ public static class OutpostLevelBuilder
         {
             mv.transform.SetPositionAndRotation(new Vector3(0, 0.05f, 0f), Quaternion.identity);
             var so = new SerializedObject(mv);
-            so.FindProperty("timeLimit").floatValue = 0f;               // таймер жоқ — оның орнына жау санағышы
             so.FindProperty("gateAnimator").objectReferenceValue = null;
             so.ApplyModifiedPropertiesWithoutUndo();
             Set(eg, "counterText", mv.timerText);

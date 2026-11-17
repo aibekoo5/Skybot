@@ -1520,7 +1520,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Patrol
   offset: {x: 0, y: 0, z: 6}
-  speed: 2.5
+  stats: {fileID: 11400000, guid: 6346a580097f6be4882fe6f44ccdd180, type: 2}
 --- !u!23 &287454643
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1608,7 +1608,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 289665081}
-  - component: {fileID: 289665080}
   m_Layer: 0
   m_Name: Spawner
   m_TagString: Untagged
@@ -1616,27 +1615,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &289665080
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 289665079}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1aa4d47d1cd1bd848a4e39e08b0d5d73, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Spawner
-  prefabs:
-  - {fileID: 3695871480232839934, guid: 7199024f64feff841887f4d99ea7bcd3, type: 3}
-  - {fileID: 5954498566871750226, guid: 7d3ee687cd822524bbe6f9fd4c6a2f2a, type: 3}
-  - {fileID: 5300564767715846594, guid: 35ffb05ada7ecfb4a90bfc19896b144c, type: 3}
-  firstDelay: 1
-  interval: 1.4
-  rangeX: 1
-  rangeZ: 5
-  spawnHeight: 12
 --- !u!4 &289665081
 Transform:
   m_ObjectHideFlags: 0
@@ -2898,14 +2876,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2cf99e602e8b78340964d708ccc795d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Movement
-  speed: 6
-  turnSpeed: 6
-  jumpImpulse: 5
-  airControl: 0.4
-  acceleration: 30
-  shootMoveMultiplier: 0.2
-  jumpCooldown: 0.25
-  timeLimit: 150
+  stats: {fileID: 11400000, guid: c8c280c6058931d4b9d0f8e32a3c979f, type: 2}
+  items: {fileID: 11400000, guid: 92e1cdcd28f560e4a91a1013ccbd0429, type: 2}
   feet: {fileID: 79528668}
   groundRadius: 0.2
   groundMask:
@@ -2921,7 +2893,6 @@ MonoBehaviour:
   jumpSound: {fileID: 8300000, guid: 1772fe2afff5c214783f44978d58a1ec, type: 3}
   winSound: {fileID: 8300000, guid: f697f25c4b524b544aee86cf36488bdc, type: 3}
   messageTime: 2
-  aimHoldTime: 0.6
 --- !u!54 &606805358
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -3170,7 +3141,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e46846b64d1c87749a1b53d4567eb9be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Health
-  maxHp: 3
+  stats: {fileID: 11400000, guid: c8c280c6058931d4b9d0f8e32a3c979f, type: 2}
   hp: 3
   hurtClip: {fileID: 8300000, guid: 8d08adfc64987424796c564faf89f4f6, type: 3}
   healClip: {fileID: 8300000, guid: 21965665526b8454799f9f4998bcfdca, type: 3}
@@ -3187,7 +3158,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Shooter
   bulletPrefab: {fileID: 2182968011700902023, guid: 482b8418528397b438caf688f58d08f3, type: 3}
-  cooldown: 0.3
+  stats: {fileID: 11400000, guid: c8c280c6058931d4b9d0f8e32a3c979f, type: 2}
   muzzleDistance: 1
   muzzleHeight: 0.5
   muzzle: {fileID: 1549232370}
@@ -4552,7 +4523,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c64e54ba88366a74c8a6f4c32e223c38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Spikes
-  lifeTime: 15
+  items: {fileID: 11400000, guid: 92e1cdcd28f560e4a91a1013ccbd0429, type: 2}
+  lifeTimeOverride: -1
 --- !u!23 &988192059
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -8153,7 +8125,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Patrol
   offset: {x: 4.6, y: 0, z: 0}
-  speed: 2.5
+  stats: {fileID: 11400000, guid: 6346a580097f6be4882fe6f44ccdd180, type: 2}
 --- !u!23 &1773945205
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -8811,7 +8783,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c64e54ba88366a74c8a6f4c32e223c38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Spikes
-  lifeTime: 15
+  items: {fileID: 11400000, guid: 92e1cdcd28f560e4a91a1013ccbd0429, type: 2}
+  lifeTimeOverride: -1
 --- !u!23 &1910583529
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -8937,7 +8910,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c64e54ba88366a74c8a6f4c32e223c38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Spikes
-  lifeTime: 15
+  items: {fileID: 11400000, guid: 92e1cdcd28f560e4a91a1013ccbd0429, type: 2}
+  lifeTimeOverride: -1
 --- !u!23 &1918751676
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -9016,6 +8990,54 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1918751673}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1953880885
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1953880887}
+  - component: {fileID: 1953880886}
+  m_Layer: 0
+  m_Name: LevelRunner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1953880886
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1953880885}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3215c949f2cc01c4da63fd14e9c9fe71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LevelRunner
+  items: {fileID: 11400000, guid: 92e1cdcd28f560e4a91a1013ccbd0429, type: 2}
+  introTime: 2.5
+  endDelay: 2
+  winScene: Win
+--- !u!4 &1953880887
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1953880885}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1958636582
 GameObject:
   m_ObjectHideFlags: 0
@@ -9139,7 +9161,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Patrol
   offset: {x: 6, y: 0, z: 0}
-  speed: 2.5
+  stats: {fileID: 11400000, guid: 6346a580097f6be4882fe6f44ccdd180, type: 2}
 --- !u!23 &1974910662
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -9665,3 +9687,4 @@ SceneRoots:
   - {fileID: 1298008104}
   - {fileID: 1724569066}
   - {fileID: 1292920020}
+  - {fileID: 1953880887}
