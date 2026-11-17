@@ -19,20 +19,20 @@ using UnityEngine.UI;
 public static class MobileUIBuilder
 {
     // ---------- style: one look for the whole game ----------
-    static readonly Color Navy      = new Color(0.07f, 0.10f, 0.20f, 0.82f);   // plates
-    static readonly Color NavySolid = new Color(0.06f, 0.09f, 0.18f, 0.96f);   // settings / help
-    static readonly Color Amber     = new Color(1.00f, 0.69f, 0.13f, 1f);      // main action
-    static readonly Color Coral     = new Color(0.95f, 0.36f, 0.27f, 1f);      // fire / quit
-    static readonly Color Steel     = new Color(0.20f, 0.29f, 0.47f, 1f);      // secondary
-    static readonly Color Ink       = new Color(0.08f, 0.09f, 0.14f, 1f);      // text on amber
-    static readonly Color Dim       = new Color(0f, 0f, 0f, 0.72f);            // pause overlay
+    internal static readonly Color Navy      = new Color(0.07f, 0.10f, 0.20f, 0.82f);   // plates
+    internal static readonly Color NavySolid = new Color(0.06f, 0.09f, 0.18f, 0.96f);   // settings / help
+    internal static readonly Color Amber     = new Color(1.00f, 0.69f, 0.13f, 1f);      // main action
+    internal static readonly Color Coral     = new Color(0.95f, 0.36f, 0.27f, 1f);      // fire / quit
+    internal static readonly Color Steel     = new Color(0.20f, 0.29f, 0.47f, 1f);      // secondary
+    internal static readonly Color Ink       = new Color(0.08f, 0.09f, 0.14f, 1f);      // text on amber
+    internal static readonly Color Dim       = new Color(0f, 0f, 0f, 0.72f);            // pause overlay
 
-    static Sprite Rounded => AssetDatabase.GetBuiltinExtraResource<Sprite>("UI/Skin/UISprite.psd");
-    static Sprite Circle  => AssetDatabase.GetBuiltinExtraResource<Sprite>("UI/Skin/Knob.psd");
+    internal static Sprite Rounded => AssetDatabase.GetBuiltinExtraResource<Sprite>("UI/Skin/UISprite.psd");
+    internal static Sprite Circle  => AssetDatabase.GetBuiltinExtraResource<Sprite>("UI/Skin/Knob.psd");
 
     const string MenuScene = "Assets/Scenes/Main menu.unity";
     const string WinScene  = "Assets/Scenes/Win.unity";
-    static readonly string[] LevelScenes =
+    internal static readonly string[] LevelScenes =
     {
         "Assets/Scenes/Level1.unity",
         "Assets/Scenes/Level 2.unity",
@@ -56,7 +56,7 @@ public static class MobileUIBuilder
     // =====================================================================
     // MAIN MENU: title, Play, Settings, How to play, Quit
     // =====================================================================
-    static void BuildMenu(Scene scene)
+    internal static void BuildMenu(Scene scene)
     {
         Canvas canvas = FindCanvas(scene);
         SetupScaler(canvas);
@@ -108,7 +108,7 @@ public static class MobileUIBuilder
         Save(scene);
     }
 
-    static void BuildSettingsPanel(RectTransform root)
+    internal static void BuildSettingsPanel(RectTransform root)
     {
         RectTransform panel = Child(root, "SettingsPanel");
         Stretch(panel);
@@ -140,7 +140,7 @@ public static class MobileUIBuilder
         StyleButton(back, "BACK", Amber, Ink, 48);
     }
 
-    static void BuildHelpPanel(RectTransform root)
+    internal static void BuildHelpPanel(RectTransform root)
     {
         RectTransform panel = Child(root, "HelpPanel");
         Stretch(panel);
@@ -193,7 +193,7 @@ public static class MobileUIBuilder
     // =====================================================================
     // LEVEL: HUD (hearts, score, timer, pause, joystick, JUMP, FIRE) + Pause
     // =====================================================================
-    static void BuildLevel(Scene scene)
+    internal static void BuildLevel(Scene scene)
     {
         Canvas canvas = FindCanvas(scene);
         SetupScaler(canvas);
@@ -317,7 +317,7 @@ public static class MobileUIBuilder
     // =====================================================================
     // WIN: title, Play again, Menu
     // =====================================================================
-    static void BuildWin(Scene scene)
+    internal static void BuildWin(Scene scene)
     {
         Canvas canvas = FindCanvas(scene);
         SetupScaler(canvas);
@@ -350,9 +350,9 @@ public static class MobileUIBuilder
     // =====================================================================
     // helpers
     // =====================================================================
-    enum Anchor { TopLeft, TopCenter, TopRight, Center, BottomLeft, BottomCenter, BottomRight }
+    internal enum Anchor { TopLeft, TopCenter, TopRight, Center, BottomLeft, BottomCenter, BottomRight }
 
-    static Vector2 AnchorPoint(Anchor a)
+    internal static Vector2 AnchorPoint(Anchor a)
     {
         switch (a)
         {
@@ -367,7 +367,7 @@ public static class MobileUIBuilder
     }
 
     // anchor + pivot on the same point (like Shift + Alt in the anchor menu)
-    static void Place(RectTransform rt, Anchor a, Vector2 pos, Vector2 size)
+    internal static void Place(RectTransform rt, Anchor a, Vector2 pos, Vector2 size)
     {
         Vector2 p = AnchorPoint(a);
         rt.anchorMin = rt.anchorMax = rt.pivot = p;
@@ -377,7 +377,7 @@ public static class MobileUIBuilder
         rt.localRotation = Quaternion.identity;
     }
 
-    static void Stretch(RectTransform rt)
+    internal static void Stretch(RectTransform rt)
     {
         rt.anchorMin = Vector2.zero; rt.anchorMax = Vector2.one;
         rt.pivot = new Vector2(0.5f, 0.5f);
@@ -385,13 +385,13 @@ public static class MobileUIBuilder
         rt.localScale = Vector3.one;
     }
 
-    static void FillParent(RectTransform rt, float padX)
+    internal static void FillParent(RectTransform rt, float padX)
     {
         Stretch(rt);
         rt.offsetMin = new Vector2(padX, 0); rt.offsetMax = new Vector2(-padX, 0);
     }
 
-    static void SetupScaler(Canvas canvas)
+    internal static void SetupScaler(Canvas canvas)
     {
         canvas.renderMode = RenderMode.ScreenSpaceOverlay;
         CanvasScaler cs = canvas.GetComponent<CanvasScaler>();
@@ -403,7 +403,7 @@ public static class MobileUIBuilder
         EditorUtility.SetDirty(cs);
     }
 
-    static RectTransform SafeAreaIn(RectTransform parent)
+    internal static RectTransform SafeAreaIn(RectTransform parent)
     {
         RectTransform safe = Child(parent, "SafeArea") ?? NewRect("SafeArea", parent);
         Stretch(safe);
@@ -411,7 +411,7 @@ public static class MobileUIBuilder
         return safe;
     }
 
-    static RectTransform MakeBackground(RectTransform root, Image source)
+    internal static RectTransform MakeBackground(RectTransform root, Image source)
     {
         RectTransform bg = Child(root, "Background") ?? NewRect("Background", root);
         Stretch(bg);
@@ -431,7 +431,7 @@ public static class MobileUIBuilder
         return bg;
     }
 
-    static RectTransform Plate(RectTransform parent, string name, Anchor a, Vector2 pos, Vector2 size)
+    internal static RectTransform Plate(RectTransform parent, string name, Anchor a, Vector2 pos, Vector2 size)
     {
         RectTransform plate = Child(parent, name) ?? NewRect(name, parent);
         Place(plate, a, pos, size);
@@ -440,7 +440,7 @@ public static class MobileUIBuilder
         return plate;
     }
 
-    static RectTransform NewRect(string name, Transform parent)
+    internal static RectTransform NewRect(string name, Transform parent)
     {
         GameObject go = new GameObject(name, typeof(RectTransform));
         go.layer = LayerMask.NameToLayer("UI");
@@ -448,7 +448,7 @@ public static class MobileUIBuilder
         return go.GetComponent<RectTransform>();
     }
 
-    static RectTransform Move(RectTransform rt, Transform parent)
+    internal static RectTransform Move(RectTransform rt, Transform parent)
     {
         if (rt == null) throw new System.Exception("[Sky Bot] UI object not found under " + parent.name);
         if (rt.parent != parent) rt.SetParent(parent, false);
@@ -456,7 +456,7 @@ public static class MobileUIBuilder
     }
 
     // finds the object either in its old place or already moved into the SafeArea (re-run)
-    static RectTransform Grab(Transform oldParent, Transform safe, string name, string newName = null)
+    internal static RectTransform Grab(Transform oldParent, Transform safe, string name, string newName = null)
     {
         RectTransform rt = Child(oldParent, name) ?? (newName != null ? FindDeep(safe, newName) : Child(safe, name));
         Move(rt, safe);
@@ -464,28 +464,28 @@ public static class MobileUIBuilder
         return rt;
     }
 
-    static T Ensure<T>(Component c) where T : Component
+    internal static T Ensure<T>(Component c) where T : Component
     {
         T t = c.GetComponent<T>();
         if (t == null) t = c.gameObject.AddComponent<T>();
         return t;
     }
 
-    static RectTransform Child(Transform parent, string name, bool optional = false)
+    internal static RectTransform Child(Transform parent, string name, bool optional = false)
     {
         foreach (Transform c in parent)
             if (c.name == name) return c as RectTransform;
         return null;
     }
 
-    static RectTransform FindDeep(Transform parent, string name)
+    internal static RectTransform FindDeep(Transform parent, string name)
     {
         foreach (RectTransform rt in parent.GetComponentsInChildren<RectTransform>(true))
             if (rt.name == name) return rt;
         return null;
     }
 
-    static Canvas FindCanvas(Scene scene)
+    internal static Canvas FindCanvas(Scene scene)
     {
         foreach (GameObject go in scene.GetRootGameObjects())
         {
@@ -495,7 +495,7 @@ public static class MobileUIBuilder
         throw new System.Exception("[Sky Bot] No Canvas in " + scene.path);
     }
 
-    static TextMeshProUGUI MakeText(RectTransform parent, string name, string text, float size, FontStyles style, Color color)
+    internal static TextMeshProUGUI MakeText(RectTransform parent, string name, string text, float size, FontStyles style, Color color)
     {
         RectTransform rt = Child(parent, name) ?? NewRect(name, parent);
         TextMeshProUGUI t = Ensure<TextMeshProUGUI>(rt);
@@ -506,7 +506,7 @@ public static class MobileUIBuilder
         return t;
     }
 
-    static void StyleHudText(TextMeshProUGUI t, string placeholder, float size, TextAlignmentOptions align)
+    internal static void StyleHudText(TextMeshProUGUI t, string placeholder, float size, TextAlignmentOptions align)
     {
         if (t == null) return;
         if (!string.IsNullOrEmpty(placeholder) && (string.IsNullOrEmpty(t.text) || t.text == "New Text" || t.text.StartsWith("Монеты")))
@@ -520,7 +520,7 @@ public static class MobileUIBuilder
         t.raycastTarget = false;
     }
 
-    static void Label(RectTransform rt, string text, Vector2 pos)
+    internal static void Label(RectTransform rt, string text, Vector2 pos)
     {
         Place(rt, Anchor.Center, pos, new Vector2(420, 100));
         TextMeshProUGUI t = rt.GetComponent<TextMeshProUGUI>();
@@ -529,7 +529,7 @@ public static class MobileUIBuilder
         t.textWrappingMode = TextWrappingModes.NoWrap;
     }
 
-    static void StyleButton(Button b, string label, Color bg, Color fg, float size)
+    internal static void StyleButton(Button b, string label, Color bg, Color fg, float size)
     {
         Image img = b.GetComponent<Image>();
         img.sprite = Rounded; img.type = Image.Type.Sliced; img.color = bg;
@@ -551,7 +551,7 @@ public static class MobileUIBuilder
         EditorUtility.SetDirty(b);
     }
 
-    static Button MakeButton(RectTransform parent, string name, string label, Color bg, Color fg, float size, Vector2 pos, Vector2 dim)
+    internal static Button MakeButton(RectTransform parent, string name, string label, Color bg, Color fg, float size, Vector2 pos, Vector2 dim)
     {
         RectTransform rt = Child(parent, name) ?? NewRect(name, parent);
         Place(rt, Anchor.Center, pos, dim);
@@ -561,7 +561,7 @@ public static class MobileUIBuilder
         return b;
     }
 
-    static void RoundControl(RectTransform rt, Vector2 pos, float size, Color bg, string label, Color fg, float fontSize)
+    internal static void RoundControl(RectTransform rt, Vector2 pos, float size, Color bg, string label, Color fg, float fontSize)
     {
         Place(rt, Anchor.BottomRight, pos, new Vector2(size, size));
         Image img = rt.GetComponent<Image>();
@@ -574,7 +574,7 @@ public static class MobileUIBuilder
         t.raycastTarget = false;
     }
 
-    static void StyleInputField(TMP_InputField f)
+    internal static void StyleInputField(TMP_InputField f)
     {
         Image img = f.GetComponent<Image>();
         img.sprite = Rounded; img.type = Image.Type.Sliced; img.color = new Color(1, 1, 1, 0.95f);
@@ -589,7 +589,7 @@ public static class MobileUIBuilder
         EditorUtility.SetDirty(f);
     }
 
-    static void StyleToggle(RectTransform rt, string label, Vector2 pos)
+    internal static void StyleToggle(RectTransform rt, string label, Vector2 pos)
     {
         Place(rt, Anchor.Center, new Vector2(pos.x + 150, pos.y), new Vector2(560, 110));
         Toggle tg = rt.GetComponent<Toggle>();
@@ -614,7 +614,7 @@ public static class MobileUIBuilder
         EditorUtility.SetDirty(tg);
     }
 
-    static void StyleDropdown(TMP_Dropdown d)
+    internal static void StyleDropdown(TMP_Dropdown d)
     {
         Image img = d.GetComponent<Image>(); img.sprite = Rounded; img.type = Image.Type.Sliced; img.color = Color.white;
         d.captionText.fontSize = 44; d.captionText.color = Ink;
@@ -637,7 +637,7 @@ public static class MobileUIBuilder
         EditorUtility.SetDirty(d);
     }
 
-    static void StyleSlider(Slider s)
+    internal static void StyleSlider(Slider s)
     {
         RectTransform bg = Child(s.transform, "Background");
         if (bg != null) bg.GetComponent<Image>().color = new Color(1, 1, 1, 0.25f);
@@ -654,7 +654,7 @@ public static class MobileUIBuilder
         EditorUtility.SetDirty(s);
     }
 
-    static void Wire(Button b, UnityAction action)
+    internal static void Wire(Button b, UnityAction action)
     {
         for (int i = b.onClick.GetPersistentEventCount() - 1; i >= 0; i--)
             UnityEventTools.RemovePersistentListener(b.onClick, i);
@@ -662,7 +662,7 @@ public static class MobileUIBuilder
         EditorUtility.SetDirty(b);
     }
 
-    static void Save(Scene s)
+    internal static void Save(Scene s)
     {
         EditorSceneManager.MarkSceneDirty(s);
         EditorSceneManager.SaveScene(s);

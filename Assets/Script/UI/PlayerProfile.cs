@@ -1,6 +1,7 @@
 using UnityEngine;
 using TMPro;
 
+// Кейіпкердің аты мен түсі — save.json-дағы баптаулардан
 public class PlayerProfile : MonoBehaviour
 {
     public TextMeshProUGUI nameText;
@@ -9,9 +10,10 @@ public class PlayerProfile : MonoBehaviour
 
     void Start()
     {
-        nameText.text = PlayerPrefs.GetString("PlayerName", "Player");
+        SettingsData s = SaveSystem.Settings;
+        if (nameText != null) nameText.text = string.IsNullOrWhiteSpace(s.playerName) ? "Player" : s.playerName;
 
-        int colorIndex = PlayerPrefs.GetInt("PlayerColor", 0);
+        int colorIndex = s.playerColor;
         // the hero model is a child object, so look for the renderer in children
         Renderer body = GetComponentInChildren<Renderer>();
         if (body != null && colorIndex >= 0 && colorIndex < colors.Length)

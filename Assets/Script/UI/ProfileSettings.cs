@@ -1,42 +1,53 @@
 using UnityEngine;
 using TMPro;
-using UnityEngine.UI;     
+using UnityEngine.UI;
 
+// Мәзірдегі баптаулар. Бұрын PlayerPrefs еді — енді бәрі save.json-ның "settings" бөлімінде.
+// Әр өзгерістен кейін SaveSystem.SaveSoon() — жарты секундтан соң файлға жазылады.
 public class ProfileSettings : MonoBehaviour
 {
     public TMP_InputField nameField;
-    public Toggle fullscreenToggle;  // inside the class
+    public TMP_Dropdown colorDropdown;
+    public Toggle fullscreenToggle;
     public Toggle musicToggle;
+    public Slider volumeSlider;
     public AudioSource bgSound;
 
     void Start()
     {
-        nameField.text = PlayerPrefs.GetString("PlayerName", "");
-        colorDropdown.value = PlayerPrefs.GetInt("PlayerColor", 0);
-        fullscreenToggle.isOn = PlayerPrefs.GetInt("Fullscreen", 1) == 1;
-        musicToggle.isOn = PlayerPrefs.GetInt("Music", 1) == 1;
+        // ...WithoutNotify: басында мәнді қойғанда onValueChanged іске қосылмайды (бос сақтау болмайды)
+        SettingsData s = SaveSystem.Settings;
+        nameField.SetTextWithoutNotify(s.playerName);
+        colorDropdown.SetValueWithoutNotify(s.playerColor);
+        fullscreenToggle.SetIsOnWithoutNotify(s.fullscreen);
+        musicToggle.SetIsOnWithoutNotify(s.musicOn);
+        if (volumeSlider != null) volumeSlider.SetValueWithoutNotify(s.musicVolume);
+        SaveSystem.ApplyAudio();
     }
 
     public void SaveName(string value)
     {
-        PlayerPrefs.SetString("PlayerName", value);
+        SaveSystem.Settings.playerName = value;
+        SaveSystem.SaveSoon();
     }
-    public TMP_Dropdown colorDropdown;   // класс ішінде
 
     public void SaveColor(int index)
     {
-        PlayerPrefs.SetInt("PlayerColor", index);
+        SaveSystem.Settings.playerColor = index;
+        SaveSystem.SaveSoon();
     }
 
-     public void SetFullscreen(bool isOn)
+    public void SetFullscreen(bool isOn)
     {
-        Screen.fullScreen = isOn;
-        PlayerPrefs.SetInt("Fullscreen", isOn ? 1 : 0);
+        SaveSystem.Settings.fullscreen = isOn;
+        SaveSystem.ApplyScreen();
+        SaveSystem.SaveSoon();
     }
 
     public void SetMusic(bool isOn)
     {
-        bgSound.mute = !isOn;
-        PlayerPrefs.SetInt("Music", isOn ? 1 : 0);
+        SaveSystem.Settings.musicOn = isOn;
+        SaveSystem.ApplyAudio();
+        SaveSystem.SaveSoon();
     }
 }

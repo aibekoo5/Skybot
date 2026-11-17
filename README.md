@@ -33,6 +33,13 @@ Author: Kemel Aibek.
 | FIRE / mouse, X | Shoot |
 | II (top-right) / Esc / Android Back | Pause |
 
+## Data and saves (week 11)
+- Balance numbers live in `Assets/Data` (PlayerStats, Enemies/*Stats, BossStats, ItemValues), not in scripts
+- Levels: `Assets/Data/Levels/Level_01..04` (LevelData) + order in `Assets/Resources/LevelList`; `LevelRunner` builds any level from its asset
+- Progress + settings: `save.json` in `Application.persistentDataPath` (JsonUtility, broken file → defaults)
+- `Tools → Sky Bot → Build Data And Saves` (re-run safe), `Tools → Sky Bot → Smoke Test Data And Saves`
+- Script map: [`Docs/SCRIPT_MAP_Week11.md`](Docs/SCRIPT_MAP_Week11.md)
+
 ## Docs
 - Game Design Document: [`Docs/SkyBot_GDD.pdf`](Docs/SkyBot_GDD.pdf)
 - AI use: [`AI_LOG.txt`](AI_LOG.txt)

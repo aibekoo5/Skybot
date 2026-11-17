@@ -20,3 +20,11 @@ Changed numbers after playtest (old → new):
 - Machine gun burstTurnSpeed 55°/s → 40°/s — the burst followed the player too well, so running sideways did not help. Now the dodge works.
 
 Result: both testers finished the level on the next try and said the enemies felt fair.
+
+## Week 11 — Data and Saves
+
+2026-11-13 Asked the agent to move every balance number into ScriptableObjects. It made PlayerStats, one EnemyStats base + RiflemanStats / MachineGunStats / BrawlerStats, BossStats, ItemValues. The asset values are copied from the old prefab/scene values (MachineGun maxHp 4, view 16 m / 140°; Brawler maxHp 2), so the game plays the same as after the week-10 playtest.
+2026-11-13 Boss phase 2 used to do `pause *= 0.5f` on its own field. With a ScriptableObject that would change the asset forever in Play Mode, so Boss copies the numbers in Start and changes only the copy.
+2026-11-15 Levels: one LevelData asset per level (number, name, scene, goal, time, enemy spawn points with patrol points, hazard waves). The same LevelRunner script is in every level scene and builds the level from the asset; the platforms stay in the scene. The Outpost enemies and the Level1/Level 2 rock spawners were moved from the scenes into Level_01..03.
+2026-11-17 Save: JsonUtility to persistentDataPath/save.json (no BinaryFormatter, no PlayerPrefs any more). Dictionary is skipped by JsonUtility, so best scores are a List<LevelRecord>. try/catch + Repair() → a broken or edited file gives defaults, never a crash. Saves after a level, on settings change (0.5 s delay so the slider does not write every frame), in OnApplicationPause(true) and on quit.
+2026-11-17 Removed SurvivalTimer.cs and SpawnerRamp.cs — not used in any scene since week 9 and full of hard-coded numbers.
