@@ -4,14 +4,14 @@ using UnityEditor;
 using UnityEditor.Build.Reporting;
 using UnityEngine;
 
-// Tools → Sky Bot → Build Android APK
+// Tools → Cloud Strike → Build Android APK
 // Batch: Unity.exe -batchmode -projectPath <SkyBot> -executeMethod AndroidApkBuilder.Build -logFile Logs/apk_build.log -quit
-// Нәтиже: Builds/SkyBot.apk (Build Settings-тегі қосулы сахналар, ARM64, IL2CPP).
+// Нәтиже: Builds/CloudStrike.apk (Build Settings-тегі қосулы сахналар, ARM64, IL2CPP).
 public static class AndroidApkBuilder
 {
-    const string OutFile = "Builds/SkyBot.apk";
+    const string OutFile = "Builds/CloudStrike.apk";
 
-    [MenuItem("Tools/Sky Bot/Build Android APK")]
+    [MenuItem("Tools/Cloud Strike/Build Android APK")]
     public static void Build()
     {
         string[] scenes = EditorBuildSettings.scenes.Where(s => s.enabled).Select(s => s.path).ToArray();

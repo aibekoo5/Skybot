@@ -42,7 +42,7 @@ public class Health : MonoBehaviour
         hp -= dmg;
         if (hp < 0) hp = 0;
         Debug.Log("OUCH! HP: " + hp);
-        if (src != null && hurtClip != null) src.PlayOneShot(hurtClip);
+        AudioManager.PlayVaried(src, hurtClip);
 
         if (hud != null) hud.SetHearts(hp);     
 
@@ -58,7 +58,7 @@ public class Health : MonoBehaviour
     {
         hp = Mathf.Min(hp + amount, stats.maxHp);
         Debug.Log("HEAL! HP: " + hp);
-        if (src != null && healClip != null) src.PlayOneShot(healClip);
+        AudioManager.PlayVaried(src, healClip);
 
         if (hud != null) hud.SetHearts(hp);    
     }
@@ -82,9 +82,25 @@ public class Health : MonoBehaviour
             if (r != null) r.enabled = v;
     }
 
+    bool gameOverStarted;
+
+    // жеңіліс: lose дыбысы (2D, AudioManager — сахна қайта жүктелсе де соңына дейін естіледі),
+    // экранда хабар, сосын деңгей қайта басталады
     void GameOver()
     {
+        if (gameOverStarted) return;
+        gameOverStarted = true;
+        invincible = true;
         Debug.Log("GAME OVER");
+        if (AudioManager.Instance != null) AudioManager.Instance.PlayLose();
+        Movement mv = GetComponent<Movement>();
+        if (mv != null) mv.EndGame("You lose!");
+        StartCoroutine(ReloadAfter(1.6f));
+    }
+
+    IEnumerator ReloadAfter(float seconds)
+    {
+        yield return new WaitForSecondsRealtime(seconds);
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }

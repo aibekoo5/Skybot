@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LevelData
   levelNumber: 1
   displayName: Outpost
-  sceneName: Level2_Outpost
+  sceneName: Level1_Outpost
   goal: 1
   goalText: Defeat every enemy - the gate opens
   timeLimit: 0

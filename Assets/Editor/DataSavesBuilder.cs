@@ -8,7 +8,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using static MobileUIBuilder;
 
-// Tools → Sky Bot → Build Data And Saves (Assignment 11)
+// Tools → Cloud Strike → Build Data And Saves (Assignment 11)
 // 1) Assets/Data-да баланс asset-терін жасайды (PlayerStats, үш EnemyStats, PatrollerStats,
 //    BossStats, ItemValues) — мәндері бұрын кодта/prefab-та тұрған сандармен бірдей.
 // 2) Төрт LevelData + Resources/LevelList жасайды.
@@ -34,7 +34,7 @@ public static class DataSavesBuilder
     static PatrollerStats patroller;
     static BossStats boss;
 
-    [MenuItem("Tools/Sky Bot/Build Data And Saves (Assignment 11)")]
+    [MenuItem("Tools/Cloud Strike/Build Data And Saves (Assignment 11)")]
     public static void Run()
     {
         if (!Application.isBatchMode && !EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;
@@ -66,13 +66,13 @@ public static class DataSavesBuilder
             SetOnPrefab(p, typeof(Hazard), "items", items);
 
         // ---------- 2) деңгейлер ----------
-        LevelData l1 = Level("Level_01", 1, "Outpost", "Level2_Outpost", LevelGoal.DefeatAllEnemies,
+        LevelData l1 = Level("Level_01", 1, "Outpost", "Level1_Outpost", LevelGoal.DefeatAllEnemies,
                              "Defeat every enemy - the gate opens", 0f);
-        LevelData l2 = Level("Level_02", 2, "Sky Islands", "Level1", LevelGoal.CollectCoins,
+        LevelData l2 = Level("Level_02", 2, "Sky Islands", "Level2_SkyIslands", LevelGoal.CollectCoins,
                              "Collect every coin and reach the gate", 150f);
-        LevelData l3 = Level("Level_03", 3, "Spike Bridge", "Level 2", LevelGoal.CollectCoins,
+        LevelData l3 = Level("Level_03", 3, "Spike Bridge", "Level3_SpikeBridge", LevelGoal.CollectCoins,
                              "Collect every coin - watch the spikes", 150f);
-        LevelData l4 = Level("Level_04", 4, "Boss Arena", "Level3_Boss", LevelGoal.DefeatBoss,
+        LevelData l4 = Level("Level_04", 4, "Boss Arena", "Level4_BossArena", LevelGoal.DefeatBoss,
                              "Defeat the boss", 0f);
 
         LevelList list = Asset<LevelList>("Assets/Resources/LevelList.asset");

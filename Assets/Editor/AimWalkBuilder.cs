@@ -3,7 +3,7 @@ using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
 
-// Tools → Sky Bot → Add Aim Walk Layer
+// Tools → Cloud Strike → Add Aim Walk Layer
 // SwatAnimator-ға «AimLocomotion» қабатын қосады: атып жатқанда кейіпкер экран жаққа қарайды,
 // ал жүру бағыты кез келген болуы мүмкін — сондықтан жүгіру емес, 2D blend tree ойналады:
 // алға жүру / артқа жүру / солға-оңға strafe / орнында көздеу.
@@ -15,7 +15,7 @@ public static class AimWalkBuilder
     const string ControllerPath = "Assets/Animations/SwatAnimator.controller";
     const string Folder = "Assets/Models/Swat";
 
-    [MenuItem("Tools/Sky Bot/Add Aim Walk Layer")]
+    [MenuItem("Tools/Cloud Strike/Add Aim Walk Layer")]
     public static void Run()
     {
         var ctrl = AssetDatabase.LoadAssetAtPath<AnimatorController>(ControllerPath);
@@ -24,7 +24,7 @@ public static class AimWalkBuilder
         Debug.Log("[AimWalk] Дайын: атып жүргендегі анимация қосылды.");
     }
 
-    [MenuItem("Tools/Sky Bot/Remove Shoot Animation")]
+    [MenuItem("Tools/Cloud Strike/Remove Shoot Animation")]
     public static void RemoveShootAnimation()
     {
         var ctrl = AssetDatabase.LoadAssetAtPath<AnimatorController>(ControllerPath);

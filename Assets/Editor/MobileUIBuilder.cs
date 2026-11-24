@@ -8,7 +8,7 @@ using UnityEngine.InputSystem.OnScreen;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-// Tools → Sky Bot → Rebuild Mobile UI
+// Tools → Cloud Strike → Rebuild Mobile UI
 // Makes the Main Menu, HUD, Pause and Win screens fit every phone:
 //   * Canvas Scaler: Scale With Screen Size, 1920 x 1080, Match = 1 (landscape game)
 //   * every element anchored to its corner / edge / center, panels stretched
@@ -34,12 +34,12 @@ public static class MobileUIBuilder
     const string WinScene  = "Assets/Scenes/Win.unity";
     internal static readonly string[] LevelScenes =
     {
-        "Assets/Scenes/Level1.unity",
-        "Assets/Scenes/Level 2.unity",
-        "Assets/Scenes/Level3_Boss.unity",
+        "Assets/Scenes/Level2_SkyIslands.unity",
+        "Assets/Scenes/Level3_SpikeBridge.unity",
+        "Assets/Scenes/Level4_BossArena.unity",
     };
 
-    [MenuItem("Tools/Sky Bot/Rebuild Mobile UI")]
+    [MenuItem("Tools/Cloud Strike/Rebuild Mobile UI")]
     public static void RebuildAll()
     {
         if (!Application.isBatchMode && !EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;
@@ -74,7 +74,7 @@ public static class MobileUIBuilder
         mp.sprite = null;
         RectTransform safe = SafeAreaIn(menuPanel);
 
-        TextMeshProUGUI title = MakeText(safe, "Title", "SKY BOT", 120, FontStyles.Bold, Color.white);
+        TextMeshProUGUI title = MakeText(safe, "Title", "CLOUD STRIKE", 120, FontStyles.Bold, Color.white);
         Place(title.rectTransform, Anchor.TopCenter, new Vector2(0, -70), new Vector2(1200, 150));
         TextMeshProUGUI tag = MakeText(safe, "Tagline", "Run. Jump. Shoot. Beat the boss.", 40, FontStyles.Italic, Amber);
         Place(tag.rectTransform, Anchor.TopCenter, new Vector2(0, -215), new Vector2(1200, 60));
@@ -120,20 +120,37 @@ public static class MobileUIBuilder
         Place(title.rectTransform, Anchor.TopCenter, new Vector2(0, -50), new Vector2(900, 110));
 
         // left column: labels, right column: controls
-        StyleToggle(Grab(panel, safe, "Toggle_Fullscreen"), "Fullscreen", new Vector2(0, 230));
-        StyleToggle(Grab(panel, safe, "Toggle_Music"), "Music", new Vector2(0, 100));
+        // week 12: SFX slider row exists (SoundPassBuilder adds it) → everything moves up one step
+        bool sfxRow = FindDeep(panel, "SliderSfx") != null;
+        float y0 = sfxRow ? 270 : 230, step = sfxRow ? 120 : 130;
+
+        StyleToggle(Grab(panel, safe, "Toggle_Fullscreen"), "Fullscreen", new Vector2(0, y0));
+        StyleToggle(Grab(panel, safe, "Toggle_Music"), "Music", new Vector2(0, y0 - step));
 
         RectTransform colorLabel = Grab(panel, safe, "Ball color");
-        Label(colorLabel, "Hero color", new Vector2(-230, -30));
+        Label(colorLabel, "Hero color", new Vector2(-230, y0 - step * 2));
         RectTransform dropdown = Grab(panel, safe, "DropdownColor");
-        Place(dropdown, Anchor.Center, new Vector2(230, -30), new Vector2(420, 110));
+        Place(dropdown, Anchor.Center, new Vector2(230, y0 - step * 2), new Vector2(420, 110));
         StyleDropdown(dropdown.GetComponent<TMP_Dropdown>());
 
         RectTransform volLabel = Grab(panel, safe, "MusicVolume");
-        Label(volLabel, "Music volume", new Vector2(-230, -160));
+        Label(volLabel, "Music volume", new Vector2(-230, y0 - step * 3));
         RectTransform slider = Grab(panel, safe, "Slider");
-        Place(slider, Anchor.Center, new Vector2(230, -160), new Vector2(420, 120));
+        Place(slider, Anchor.Center, new Vector2(230, y0 - step * 3), new Vector2(420, 110));
         StyleSlider(slider.GetComponent<Slider>());
+        RectTransform musicDb = FindDeep(safe, "MusicDb");
+        if (musicDb != null) DbLabel(musicDb, new Vector2(560, y0 - step * 3));
+
+        if (sfxRow)
+        {
+            RectTransform sfxLabel = Grab(panel, safe, "SfxVolume");
+            Label(sfxLabel, "Effects volume", new Vector2(-230, y0 - step * 4));
+            RectTransform sfx = Grab(panel, safe, "SliderSfx");
+            Place(sfx, Anchor.Center, new Vector2(230, y0 - step * 4), new Vector2(420, 110));
+            StyleSlider(sfx.GetComponent<Slider>());
+            RectTransform sfxDb = FindDeep(safe, "SfxDb");
+            if (sfxDb != null) DbLabel(sfxDb, new Vector2(560, y0 - step * 4));
+        }
 
         Button back = Grab(panel, safe, "Btn_Back").GetComponent<Button>();
         Place(back.transform as RectTransform, Anchor.BottomCenter, new Vector2(0, 50), new Vector2(420, 130));
@@ -527,6 +544,17 @@ public static class MobileUIBuilder
         t.text = text; t.fontSize = 44; t.color = Color.white;
         t.alignment = TextAlignmentOptions.MidlineRight;
         t.textWrappingMode = TextWrappingModes.NoWrap;
+    }
+
+    // "-6 dB" text right of a volume slider
+    internal static void DbLabel(RectTransform rt, Vector2 pos)
+    {
+        Place(rt, Anchor.Center, pos, new Vector2(200, 100));
+        TextMeshProUGUI t = rt.GetComponent<TextMeshProUGUI>();
+        t.fontSize = 38; t.color = Amber;
+        t.alignment = TextAlignmentOptions.MidlineLeft;
+        t.textWrappingMode = TextWrappingModes.NoWrap;
+        t.raycastTarget = false;
     }
 
     internal static void StyleButton(Button b, string label, Color bg, Color fg, float size)

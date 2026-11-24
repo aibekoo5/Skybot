@@ -141,7 +141,7 @@ public class Boss : MonoBehaviour
         hp -= dmg;
         if (hp < 0) hp = 0;
         if (hpBar != null) hpBar.value = hp;
-        if (src != null && hitClip != null) src.PlayOneShot(hitClip);
+        AudioManager.PlayVaried(src, hitClip);
         Debug.Log("BOSS HP: " + hp);
 
         // екінші фаза: жартысынан төмен — жиірек атады, желпуіш кеңірек
@@ -162,7 +162,7 @@ public class Boss : MonoBehaviour
     {
         dead = true;
         StopAllCoroutines();
-        if (deathClip != null) AudioSource.PlayClipAtPoint(deathClip, transform.position);
+        AudioManager.PlayAt(deathClip, transform.position);
 
         // деңгей бітті: ұпай → save.json → Win (LevelRunner мен LevelList шешеді)
         if (LevelRunner.Current != null)

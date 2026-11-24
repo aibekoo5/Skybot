@@ -1807,7 +1807,7 @@ AudioSource:
   m_GameObject: {fileID: 8152013062045984080}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 1864238838393797515, guid: 085d0ffbaf7b7494eab50f4979a5f360, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
@@ -1817,12 +1817,12 @@ AudioSource:
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
-  Priority: 128
-  DopplerLevel: 1
+  Priority: 64
+  DopplerLevel: 0
   MinDistance: 6
   MaxDistance: 45
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -1855,7 +1855,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 1
+      value: 0.75
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -1919,7 +1919,11 @@ MonoBehaviour:
   - {fileID: 6112635783559720193}
   bodyTint: {r: 1, g: 1, b: 1, a: 1}
   telegraphColor: {r: 1, g: 0.15, b: 0.1, a: 1}
-  telegraphClip: {fileID: 0}
+  telegraphClip: {fileID: 8300000, guid: e68f6148ad015c64d949fd7fc3d28e1a, type: 3}
+  hitClips:
+  - {fileID: 8300000, guid: e936fc2c20e235241b6cb8ad3301633d, type: 3}
+  - {fileID: 8300000, guid: a1d6549c0ccfb25469802b43923e7024, type: 3}
+  deathClip: {fileID: 8300000, guid: f0cef2780de73bf4198f2604025678cb, type: 3}
   stateLabel: {fileID: 2320396254897840349}
   showStateLabel: 1
   yawPivot: {fileID: 1184812984543509910}
@@ -1992,7 +1996,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2039,7 +2043,7 @@ MonoBehaviour:
   m_text: State
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 0}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []

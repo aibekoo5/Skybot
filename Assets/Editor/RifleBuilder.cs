@@ -3,7 +3,7 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 
-// Tools → Sky Bot → Add Rifle To Hero
+// Tools → Cloud Strike → Add Rifle To Hero
 // Қарапайым пішіндерден автомат құрастырады (Assets/Prefabs/Rifle.prefab),
 // оны үш деңгейдегі кейіпкерге қосады және Shooter.muzzle-ды мылтықтың ұшына қояды.
 // Қайта іске қосуға болады: ескі мылтық ауыстырылады.
@@ -15,12 +15,12 @@ public static class RifleBuilder
 
     static readonly string[] Scenes =
     {
-        "Assets/Scenes/Level1.unity",
-        "Assets/Scenes/Level 2.unity",
-        "Assets/Scenes/Level3_Boss.unity",
+        "Assets/Scenes/Level2_SkyIslands.unity",
+        "Assets/Scenes/Level3_SpikeBridge.unity",
+        "Assets/Scenes/Level4_BossArena.unity",
     };
 
-    [MenuItem("Tools/Sky Bot/Add Rifle To Hero")]
+    [MenuItem("Tools/Cloud Strike/Add Rifle To Hero")]
     public static void Run()
     {
         if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;

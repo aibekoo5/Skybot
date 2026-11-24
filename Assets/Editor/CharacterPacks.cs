@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 
-// Tools → Sky Bot → Swap Hero To Y Bot
+// Tools → Cloud Strike → Swap Hero To Y Bot
 // 1) Y Bot.fbx (BOT Shooter Pack) және Y Bot@Boxing.fbx-ті Humanoid етіп импорттайды
 // 2) Барлық деңгейде ойыншының Swat моделін Y Bot-қа ауыстырады (анимациялар сол күйі — Humanoid)
 // Swat енді жауларда (Rifleman, Brawler) қолданылады.
@@ -16,13 +16,13 @@ public static class CharacterPacks
 
     static readonly string[] Scenes =
     {
-        "Assets/Scenes/Level1.unity",
-        "Assets/Scenes/Level 2.unity",
-        "Assets/Scenes/Level2_Outpost.unity",
-        "Assets/Scenes/Level3_Boss.unity",
+        "Assets/Scenes/Level2_SkyIslands.unity",
+        "Assets/Scenes/Level3_SpikeBridge.unity",
+        "Assets/Scenes/Level1_Outpost.unity",
+        "Assets/Scenes/Level4_BossArena.unity",
     };
 
-    [MenuItem("Tools/Sky Bot/Swap Hero To Y Bot")]
+    [MenuItem("Tools/Cloud Strike/Swap Hero To Y Bot")]
     public static void Run()
     {
         if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;

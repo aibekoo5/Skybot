@@ -9,16 +9,16 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.SceneManagement;
 
-// Tools → Sky Bot → Build Outpost Level (Assignment 10)
+// Tools → Cloud Strike → Build Outpost Level (Assignment 10)
 // 1) Үш жау префабын жасайды: Rifleman (Swat+мылтық), MachineGun (пулемет), Brawler (Swat+бокс) (+ оқ)
-// 2) Level 2-ні негізге алып (Player, HUD, камера, пауза) жаңа Level2_Outpost сахнасын құрады:
+// 2) Level 2-ні негізге алып (Player, HUD, камера, пауза) жаңа Level1_Outpost сахнасын құрады:
 //    үш аймақ + финал, қабырғалар (көру сызығын бөгейді), NavMeshSurface
 // 3) Build Settings-те Level 2 мен Boss-тың арасына қояды
 // Қайта іске қосуға болады — префабтар мен сахна қайта құрылады.
 public static class OutpostLevelBuilder
 {
-    const string ScenePath = "Assets/Scenes/Level2_Outpost.unity";
-    const string SourceScene = "Assets/Scenes/Level 2.unity";
+    const string ScenePath = "Assets/Scenes/Level1_Outpost.unity";
+    const string SourceScene = "Assets/Scenes/Level3_SpikeBridge.unity";
     const string PrefabDir = "Assets/Prefabs/Enemies";
     const string MatDir = "Assets/Materials/Outpost";
 
@@ -26,7 +26,7 @@ public static class OutpostLevelBuilder
     const string SwatPath = "Assets/Models/Swat/Swat.fbx";
     const string AnimDir = "Assets/Animations/Enemies";
 
-    [MenuItem("Tools/Sky Bot/Build Outpost Level (Assignment 10)")]
+    [MenuItem("Tools/Cloud Strike/Build Outpost Level (Assignment 10)")]
     public static void Run()
     {
         if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;
@@ -47,7 +47,7 @@ public static class OutpostLevelBuilder
         BuildScene(rifleman, turret, brawler);
         AddToBuild();
 
-        Debug.Log("[Outpost] Дайын: Level2_Outpost құрылды (3 жау түрі, NavMesh).");
+        Debug.Log("[Outpost] Дайын: Level1_Outpost құрылды (3 жау түрі, NavMesh).");
     }
 
     // ================= материалдар =================
@@ -488,42 +488,8 @@ public static class OutpostLevelBuilder
 
         outpost = new GameObject("Outpost").transform;
 
-        // ---------- еден мен сыртқы қабырғалар ----------
-        // ені x: −14..14, ұзындығы z: −4..62
-        Block("Floor", new Vector3(0, -0.5f, 29f), new Vector3(28f, 1f, 66f), mGround, ground: true);
-        Wall("Wall W", -14.5f, 29f, 1f, 66f, 3.5f);
-        Wall("Wall E", 14.5f, 29f, 1f, 66f, 3.5f);
-        Wall("Wall S", 0f, -4.5f, 30f, 1f, 3.5f);
-        Wall("Wall N", 0f, 62.5f, 30f, 1f, 3.5f);
-
-        // аймақтарды бөлетін қабырғалар (ортасында 4 м өткел) — бір аймақтың жауы келесісін көрмейді
-        foreach (float z in new[] { 20f, 38f })
-        {
-            Wall($"Divider {z} L", -8.5f, z, 11f, 1f, 3f);
-            Wall($"Divider {z} R", 8.5f, z, 11f, 1f, 3f);
-        }
-
-        // ---------- 1-аймақ (z 0..20): Rifleman — үйрену ----------
-        Wall("Cover A1", -4f, 10f, 2f, 2f, 2.4f, mCover);
-        Wall("Cover A2", 4.5f, 14f, 2f, 2f, 2.4f, mCover);
-        Wall("Cover A3", -8f, 16f, 3f, 1f, 2.4f, mCover);
-
-        // ---------- 2-аймақ (z 20..38): пулемет + Brawler — жасырыну, қашу ----------
-        Block("Gun Deck", new Vector3(-7f, 0.5f, 34f), new Vector3(6f, 1f, 5f), mCover, ground: true);   // биіктігі 1 м — секіріп шығуға болады
-        Wall("Cover B1", -3f, 25f, 3f, 1f, 2.2f, mCover);
-        Wall("Cover B2", 3.5f, 28f, 3f, 1f, 2.2f, mCover);
-        Wall("Cover B3", -2f, 31.5f, 1f, 3f, 2.2f, mCover);
-        Wall("Pillar B4", 8f, 33f, 1.5f, 1.5f, 3f, mCover);
-
-        // ---------- 3-аймақ (z 38..62): үш түрі бірге — финал ----------
-        Wall("Pillar C1", -5f, 44f, 1.5f, 1.5f, 3f, mCover);
-        Wall("Pillar C2", 5f, 44f, 1.5f, 1.5f, 3f, mCover);
-        Wall("Pillar C3", -5f, 52f, 1.5f, 1.5f, 3f, mCover);
-        Wall("Pillar C4", 5f, 52f, 1.5f, 1.5f, 3f, mCover);
-        Block("Gate Tower", new Vector3(8.5f, 0.5f, 57f), new Vector3(5f, 1f, 4f), mCover, ground: true);
-        // шығыс қабырғасы: ортасында 4 м қақпа (Door), айналып өтуге болмайды
-        Wall("Gate Wall L", -8f, 59f, 12f, 1f, 3.5f);
-        Wall("Gate Wall R", 8f, 59f, 12f, 1f, 3.5f);
+        // ---------- аралдар, көпірлер, бекініс қабырғалары, жабулар (week 12: бұлттардың үстінде) ----------
+        SkyLevelsBuilder.BuildOutpostIslandsUnder(outpost);
 
         // ---------- NavMesh ----------
         var surface = outpost.gameObject.AddComponent<NavMeshSurface>();
@@ -531,7 +497,7 @@ public static class OutpostLevelBuilder
         surface.useGeometry = NavMeshCollectGeometry.PhysicsColliders;
         surface.layerMask = ~0;
         surface.BuildNavMesh();
-        string navPath = "Assets/Scenes/Level2_Outpost_NavMesh.asset";
+        string navPath = "Assets/Scenes/Level1_Outpost_NavMesh.asset";
         AssetDatabase.DeleteAsset(navPath);
         AssetDatabase.CreateAsset(surface.navMeshData, navPath);
 

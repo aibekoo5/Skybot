@@ -11,7 +11,7 @@ using UnityEngine.SceneManagement;
 //     Delete-пен өшіресің, Project-тен жау prefab-ын осы объектінің ішіне сүйреп жаңа жау қосасың.
 //   * Әр өзгеріс бірден LevelData asset-ке жазылады (Ctrl+S мен Play алдында да тексеріледі).
 //   * Бұл объектілер сахнаға САҚТАЛМАЙДЫ (HideFlags.DontSave) — деңгей бәрібір деректен құрылады.
-// Мәзір: Tools → Sky Bot → Enemy Preview → Rebuild / Save To LevelData
+// Мәзір: Tools → Cloud Strike → Enemy Preview → Rebuild / Save To LevelData
 [InitializeOnLoad]
 public static class LevelEnemyPreview
 {
@@ -62,7 +62,7 @@ public static class LevelEnemyPreview
         while ((root = FindRoot()) != null) Object.DestroyImmediate(root.gameObject);
     }
 
-    [MenuItem("Tools/Sky Bot/Enemy Preview/Rebuild From LevelData")]
+    [MenuItem("Tools/Cloud Strike/Enemy Preview/Rebuild From LevelData")]
     public static void Rebuild()
     {
         if (Application.isPlaying || EditorApplication.isPlayingOrWillChangePlaymode) return;
@@ -96,7 +96,7 @@ public static class LevelEnemyPreview
         foreach (Transform c in t) SetDontSave(c);
     }
 
-    [MenuItem("Tools/Sky Bot/Enemy Preview/Save To LevelData")]
+    [MenuItem("Tools/Cloud Strike/Enemy Preview/Save To LevelData")]
     public static void SaveToData()
     {
         Transform root = FindRoot();

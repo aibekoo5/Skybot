@@ -14,11 +14,35 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LevelData
   levelNumber: 3
   displayName: Spike Bridge
-  sceneName: Level 2
+  sceneName: Level3_SpikeBridge
   goal: 0
   goalText: Collect every coin - watch the spikes
   timeLimit: 150
-  enemies: []
+  enemies:
+  - prefab: {fileID: 6267903419466005429, guid: 3493003bba11fc3419fe459636db4fc9, type: 3}
+    position: {x: 1.5, y: 0, z: 13}
+    yaw: 180
+    patrolPoints:
+    - {x: -2, y: 0, z: 10}
+    - {x: 2, y: 0, z: 10}
+    - {x: 2, y: 0, z: 16}
+    - {x: -2, y: 0, z: 16}
+  - prefab: {fileID: 5309872480286370274, guid: 771cef405ad3a4e4bbf232497a5665d3, type: 3}
+    position: {x: 0, y: 2.5, z: 33}
+    yaw: 180
+    patrolPoints: []
+  - prefab: {fileID: 6145422367265939224, guid: 18ee433a394108c4eb1af2d756672ba6, type: 3}
+    position: {x: -15, y: 2.5, z: 29.5}
+    yaw: 60
+    patrolPoints: []
+  - prefab: {fileID: 6267903419466005429, guid: 3493003bba11fc3419fe459636db4fc9, type: 3}
+    position: {x: -13, y: 2.5, z: 52}
+    yaw: 180
+    patrolPoints:
+    - {x: -16, y: 2.5, z: 50}
+    - {x: -10, y: 2.5, z: 50}
+    - {x: -10, y: 2.5, z: 55}
+    - {x: -16, y: 2.5, z: 55}
   hazardWaves:
   - hazards:
     - {fileID: 3695871480232839934, guid: 7199024f64feff841887f4d99ea7bcd3, type: 3}

@@ -53,7 +53,6 @@ public class BombHazard : Hazard
             GameObject fx = Instantiate(explosionPrefab, transform.position, Quaternion.identity);
             Destroy(fx, 3f);
         }
-        if (explodeClip != null)
-            AudioSource.PlayClipAtPoint(explodeClip, transform.position);
+        AudioManager.PlayAt(explodeClip, transform.position);   // SfxBus арқылы, биіктігі сәл кездейсоқ
     }
 }

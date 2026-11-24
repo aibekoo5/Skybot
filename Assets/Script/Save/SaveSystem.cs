@@ -153,16 +153,10 @@ public static class SaveSystem
 
     // ---------- баптауларды қолдану ----------
 
-    // музыка: сахнадағы loop дыбыстары (фон музыкасы) — дыбыс деңгейі мен mute
+    // дыбыс: Music / SFX слайдерлері → AudioMixer (AudioManager децибелге айналдырады)
     public static void ApplyAudio()
     {
-        SettingsData s = Settings;
-        foreach (AudioSource a in UnityEngine.Object.FindObjectsByType<AudioSource>(FindObjectsSortMode.None))
-        {
-            if (!a.loop) continue;
-            a.volume = s.musicVolume;
-            a.mute = !s.musicOn;
-        }
+        if (AudioManager.Instance != null) AudioManager.Instance.ApplyVolumes();
     }
 
     public static void ApplyScreen()

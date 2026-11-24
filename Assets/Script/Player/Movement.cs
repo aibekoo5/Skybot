@@ -25,6 +25,8 @@ public class Movement : MonoBehaviour
     public AudioSource audioSource;
     public AudioClip coinSound;
     public AudioClip jumpSound;
+public AudioClip jumpSound2;        // week 12: екінші клип — секіру қатарынан бірдей естілмейді
+public AudioClip coinSound2;
     public AudioClip winSound;          // деңгей аяқталғанда
 
     public float messageTime = 2f;
@@ -90,8 +92,7 @@ public class Movement : MonoBehaviour
             rb.linearVelocity = v;
             rb.AddForce(Vector3.up * stats.jumpImpulse, ForceMode.Impulse);
 
-            if (audioSource != null && jumpSound != null)
-                audioSource.PlayOneShot(jumpSound);
+            AudioManager.PlayVaried(audioSource, jumpSound, jumpSound2, 0.9f);
         }
     }
 
@@ -201,8 +202,7 @@ public class Movement : MonoBehaviour
             ShowCoins();
             if (LevelRunner.Current != null) LevelRunner.Current.OnCoinCollected();
 
-            if (audioSource != null && coinSound != null)
-                audioSource.PlayOneShot(coinSound);
+            AudioManager.PlayVaried(audioSource, coinSound, coinSound2);
 
             if (coinsCollected >= totalCoins && gateAnimator != null)
                 gateAnimator.SetBool("Open", true);
@@ -288,7 +288,9 @@ public class Movement : MonoBehaviour
 
     public void PlayWinSound()
     {
-        if (audioSource != null && winSound != null) audioSource.PlayOneShot(winSound);
+        // AudioManager арқылы: келесі сахна жүктелсе де дыбыс үзілмейді
+        if (AudioManager.Instance != null) AudioManager.Instance.PlayWin(winSound);
+        else if (audioSource != null && winSound != null) audioSource.PlayOneShot(winSound);
     }
 
     void ShowCoins()

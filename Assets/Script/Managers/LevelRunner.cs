@@ -111,6 +111,7 @@ public class LevelRunner : MonoBehaviour
             timeLeft = 0f;
             finished = true;
             if (movement != null) movement.EndGame("Time's up!");
+            if (AudioManager.Instance != null) AudioManager.Instance.PlayLose();
             Invoke(nameof(Restart), endDelay);      // уақыт бітті — деңгей қайта басталады
         }
         if (movement != null && movement.timerText != null)

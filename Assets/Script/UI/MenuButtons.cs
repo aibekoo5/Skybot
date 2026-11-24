@@ -40,12 +40,13 @@ public class MenuButtons : MonoBehaviour
         }
     }
 
-    // Settings-тегі слайдер
+    // week 11-дегі музыка слайдері. Week 12-ден бастап слайдерлерді ProfileSettings басқарады
+    // (Music + SFX, децибелмен); бұл әдіс ескі сахналар үшін ғана қалды.
     public void SetVolume(float value)
     {
         SaveSystem.Settings.musicVolume = value;
         SaveSystem.ApplyAudio();
-        SaveSystem.SaveSoon();                   // баптау өзгерді → сақтаймыз
+        SaveSystem.SaveSoon();
     }
 
     public void Play()

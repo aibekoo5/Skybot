@@ -14,9 +14,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LevelData
   levelNumber: 4
   displayName: Boss Arena
-  sceneName: Level3_Boss
+  sceneName: Level4_BossArena
   goal: 2
   goalText: Defeat the boss
   timeLimit: 0
-  enemies: []
+  enemies:
+  - prefab: {fileID: 6145422367265939224, guid: 18ee433a394108c4eb1af2d756672ba6, type: 3}
+    position: {x: -9, y: 1, z: -2}
+    yaw: 120
+    patrolPoints: []
+  - prefab: {fileID: 6267903419466005429, guid: 3493003bba11fc3419fe459636db4fc9, type: 3}
+    position: {x: 9, y: 1, z: -2}
+    yaw: 240
+    patrolPoints: []
   hazardWaves: []

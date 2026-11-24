@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.SceneManagement;
 
-// Tools → Sky Bot → Smoke Test Data And Saves
+// Tools → Cloud Strike → Smoke Test Data And Saves
 // Play Mode-та автоматты тексеру (batch: -executeMethod DataSavesSmokeTest.Run, -nographics-сыз):
 //   1) бұзық save.json → ойын құламайды, әдепкі мәндер, мәзірде ескерту
 //   2) Level Select: 1-деңгей ашық, қалғаны жабық
@@ -24,7 +24,7 @@ public static class DataSavesSmokeTest
     static bool prevOptsEnabled;
     static EnterPlayModeOptions prevOpts;
 
-    [MenuItem("Tools/Sky Bot/Smoke Test Data And Saves")]
+    [MenuItem("Tools/Cloud Strike/Smoke Test Data And Saves")]
     public static void Run()
     {
         outDir = Path.GetFullPath(Path.Combine(Application.dataPath, "../Logs/SmokeTest"));

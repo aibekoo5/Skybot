@@ -34,6 +34,6 @@ public class Shooter : MonoBehaviour
         Bullet b = Instantiate(bulletPrefab, pos, Quaternion.LookRotation(aimDir));
         b.Launch(aimDir, stats.bulletSpeed, stats.bulletDamage, stats.bulletLifeTime);
 
-        if (src != null && shootClip != null) src.PlayOneShot(shootClip);
+        AudioManager.PlayVaried(src, shootClip, null, 0.8f);   // pitch 0.92–1.08: қатарынан атқанда роботтай естілмейді
     }
 }

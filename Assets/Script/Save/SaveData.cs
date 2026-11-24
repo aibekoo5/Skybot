@@ -6,7 +6,7 @@ using UnityEngine;
 //
 // Мысал:
 // { "version": 1, "unlockedLevels": [1, 2], "records": [ { "level": 1, "bestScore": 1250 } ],
-//   "settings": { "musicVolume": 0.8, "musicOn": true, "fullscreen": true, "playerName": "Aibek", "playerColor": 0 } }
+//   "settings": { "musicVolume": 0.8, "sfxVolume": 0.8, "musicOn": true, "fullscreen": true, "playerName": "Aibek", "playerColor": 0 } }
 [System.Serializable]
 public class SaveData
 {
@@ -46,7 +46,8 @@ public class LevelRecord
 [System.Serializable]
 public class SettingsData
 {
-    public float musicVolume = 0.8f;
+    public float musicVolume = 0.8f;   // 0..1 слайдер; микшерге децибелмен беріледі (Log10 × 20)
+    public float sfxVolume = 0.8f;     // week 12: эффектілер слайдері
     public bool musicOn = true;
     public bool fullscreen = true;
     public string playerName = "";
@@ -55,6 +56,7 @@ public class SettingsData
     public void Repair()
     {
         musicVolume = float.IsNaN(musicVolume) ? 0.8f : Mathf.Clamp01(musicVolume);
+        sfxVolume = float.IsNaN(sfxVolume) ? 0.8f : Mathf.Clamp01(sfxVolume);
         if (playerName == null) playerName = "";
         if (playerColor < 0) playerColor = 0;
     }

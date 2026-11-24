@@ -21,7 +21,7 @@ public class SaveSystemHook : MonoBehaviour
     void OnEnable()  { SceneManager.sceneLoaded += OnSceneLoaded; }
     void OnDisable() { SceneManager.sceneLoaded -= OnSceneLoaded; }
 
-    // әр сахнада музыка баптауын қолданамыз
+    // әр сахнада дыбыс баптауын қолданамыз (микшер)
     void OnSceneLoaded(Scene scene, LoadSceneMode mode) => SaveSystem.ApplyAudio();
 
     void Update() => SaveSystem.Tick();

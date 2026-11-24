@@ -17,7 +17,7 @@ MonoBehaviour:
   viewAngle: 120
   damage: 1
   scoreValue: 150
-  runSpeed: 12
+  runSpeed: 6.5
   walkSpeed: 1.5
   waypointWait: 1.5
   forgetTime: 3

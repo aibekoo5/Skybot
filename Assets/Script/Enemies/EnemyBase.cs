@@ -31,7 +31,9 @@ public abstract class EnemyBase : MonoBehaviour
     [SerializeField] protected Renderer[] bodyRenderers;      // ескерту кезінде қызыл жыпылықтайды
     [SerializeField] protected Color bodyTint = Color.white;  // жау түрін ажырату үшін реңк
     [SerializeField] protected Color telegraphColor = new Color(1f, 0.15f, 0.1f);
-    [SerializeField] protected AudioClip telegraphClip;       // ескерту дыбысы (міндетті емес)
+    [SerializeField] protected AudioClip telegraphClip;       // wind-up дыбысы: шабуыл ТИМЕЙ ТҰРЫП естіледі
+    [SerializeField] protected AudioClip[] hitClips;          // оқ тигенде (2 клип + кездейсоқ биіктік)
+    [SerializeField] protected AudioClip deathClip;
 
     [Header("Күйді көрсету (бейне үшін)")]
     [SerializeField] protected TextMeshPro stateLabel;        // басының үстіндегі жазу
@@ -188,9 +190,13 @@ public abstract class EnemyBase : MonoBehaviour
         audioSource.PlayOneShot(clip, volume);
     }
 
+    // wind-up БАСТАЛҒАН кадрда шақырылады (state-ке кірген сәт) — дыбыс соққыдан 0.6–0.7 с бұрын.
+    // Биіктігі 1: ойыншы бұл дыбысты «таниды», сондықтан ол өзгермейді.
     protected void PlayTelegraphSound()
     {
-        if (audioSource != null && telegraphClip != null) audioSource.PlayOneShot(telegraphClip);
+        if (audioSource == null || telegraphClip == null) return;
+        audioSource.pitch = 1f;
+        audioSource.PlayOneShot(telegraphClip, 1f);
     }
 
     void ResetTint()
@@ -232,6 +238,8 @@ public abstract class EnemyBase : MonoBehaviour
         hp -= damage;
         flashUntil = Time.time + 0.08f;
         if (hp <= 0) { Die(); return; }
+        if (hitClips != null && hitClips.Length > 0)
+            AudioManager.PlayVaried(audioSource, hitClips[0], hitClips.Length > 1 ? hitClips[1] : null, 0.8f);
         OnHit();
     }
 
@@ -247,6 +255,7 @@ public abstract class EnemyBase : MonoBehaviour
         if (agent != null && agent.enabled && agent.isOnNavMesh) { agent.isStopped = true; agent.velocity = Vector3.zero; }
         ShowState("");
         foreach (var c in GetComponentsInChildren<Collider>()) c.enabled = false;
+        AudioManager.PlayAt(deathClip, transform.position + Vector3.up);
         Died?.Invoke(this);
         StartCoroutine(DeathRoutine());
     }

@@ -3,7 +3,7 @@ using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-// Tools → Sky Bot → Lower Jump + Adapt Levels
+// Tools → Cloud Strike → Lower Jump + Adapt Levels
 // Секіру импульсі 6 → 5 (биіктік ~1.8 м → ~1.27 м, ұзындық жүгіргенде ~6 м).
 // Бір секірумен шығатын биіктік ≤ 0.7 м, аралық ≤ 3 м болатындай платформалар төмендетілді.
 // Main Camera-ға Crosshair қосылады. Қайта іске қосуға болады — мәндер жай қайта қойылады.
@@ -11,13 +11,13 @@ public static class LevelJumpTuner
 {
     const float JumpImpulse = 5f;
 
-    [MenuItem("Tools/Sky Bot/Lower Jump + Adapt Levels")]
+    [MenuItem("Tools/Cloud Strike/Lower Jump + Adapt Levels")]
     public static void Run()
     {
         if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;
         string startScene = EditorSceneManager.GetActiveScene().path;
 
-        Edit("Assets/Scenes/Level1.unity", () =>
+        Edit("Assets/Scenes/Level2_SkyIslands.unity", () =>
         {
             // басындағы баспалдақ: жер 0 → 0.75 → 1.4 → 2.05 (бұрын 1.33 → 2.16 → 2.5, аралық 3.7 м)
             SetY("Cube", 0.5f);
@@ -36,7 +36,7 @@ public static class LevelJumpTuner
             SetY("Coins/Coin  (2)", 2.71f);
         });
 
-        Edit("Assets/Scenes/Level 2.unity", () =>
+        Edit("Assets/Scenes/Level3_SpikeBridge.unity", () =>
         {
             // баспалдақ: 0 → 0.6 → 1.2 → 1.85 → арал 2.5 (бұрын 1.0 / 1.75 / 2.5)
             SetY("Level2_Map/Step 1", 0.35f);
@@ -45,7 +45,7 @@ public static class LevelJumpTuner
             SetY("Coins/Coin  (2)", 2.0f);
         });
 
-        Edit("Assets/Scenes/Level3_Boss.unity", () =>
+        Edit("Assets/Scenes/Level4_BossArena.unity", () =>
         {
             // бүйір платформалар 1.5 → 1.0
             SetY("Arena/Platform L", 0.75f);

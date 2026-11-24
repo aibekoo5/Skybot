@@ -5,10 +5,10 @@ using UnityEditor.Animations;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 
-// Tools → Sky Bot → Swap Hero To Swat
+// Tools → Cloud Strike → Swap Hero To Swat
 // 1) Mixamo файлдарын Humanoid етіп импорттайды
 // 2) SwatAnimator.controller жасайды (Idle / Running / Jump + жоғарғы денеде Shoot)
-// 3) Level1, Level 2, Level3_Boss сахналарында X Bot-ты Swat-қа ауыстырады
+// 3) Level1, Level 2, Level4_BossArena сахналарында X Bot-ты Swat-қа ауыстырады
 // Қайта іске қосуға болады (идемпотент).
 public static class SwatHeroSwapper
 {
@@ -21,9 +21,9 @@ public static class SwatHeroSwapper
 
     static readonly string[] Scenes =
     {
-        "Assets/Scenes/Level1.unity",
-        "Assets/Scenes/Level 2.unity",
-        "Assets/Scenes/Level3_Boss.unity",
+        "Assets/Scenes/Level2_SkyIslands.unity",
+        "Assets/Scenes/Level3_SpikeBridge.unity",
+        "Assets/Scenes/Level4_BossArena.unity",
     };
 
     // қайталанатын анимациялар
@@ -33,7 +33,7 @@ public static class SwatHeroSwapper
         "run backwards", "strafe", "strafe (2)",
     };
 
-    [MenuItem("Tools/Sky Bot/Swap Hero To Swat")]
+    [MenuItem("Tools/Cloud Strike/Swap Hero To Swat")]
     public static void Run()
     {
         if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;

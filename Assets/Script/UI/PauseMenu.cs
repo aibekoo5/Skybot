@@ -36,7 +36,9 @@ public class PauseMenu : MonoBehaviour
         if (pauseButton != null) pauseButton.SetActive(!paused);
 
         Time.timeScale = paused ? 0f : 1f;   // physics, timers and Update movement stop
-        AudioListener.pause = paused;        // sounds stop too
+        AudioListener.pause = paused;        // SFX stop; music ignores the listener pause...
+        if (AudioManager.Instance != null)   // ...and goes quieter + muffled (Paused snapshot)
+            AudioManager.Instance.SetPaused(paused);
 
         // the hero must not jump or shoot while the game is paused
         if (playerInput != null)
@@ -63,5 +65,6 @@ public class PauseMenu : MonoBehaviour
         // never leave the game frozen when the scene changes
         Time.timeScale = 1f;
         AudioListener.pause = false;
+        if (AudioManager.Instance != null) AudioManager.Instance.SetPaused(false);
     }
 }
